@@ -1,7 +1,9 @@
 {
   "version": 2,
-  "name": "ai-release-tracker",
+  "buildCommand": null,
   "outputDirectory": "public",
+  "installCommand": null,
+  "framework": null,
   "headers": [
     {
       "source": "/(.*)\\.html",
