@@ -1,0 +1,2495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Release Intelligence</title>
+<style>
+/* ── SCANDINAVIAN DESIGN SYSTEM ────────────────────────── */
+:root {
+  --bg:       #f5f5f0;
+  --bg2:      #eeede8;
+  --surface:  #ffffff;
+  --surface2: #f9f9f6;
+  --border:   #e0dfd8;
+  --border2:  #ccccc4;
+  --text:     #1a1a1a;
+  --text2:    #4a4a4a;
+  --muted:    #7a7a7a;
+  --muted2:   #adadad;
+  --accent:   #1a1a2e;
+  --accent2:  #2d5be3;
+  --green:    #1d7a4f;
+  --green-bg: #eaf4ef;
+  --orange:   #c75b1a;
+  --orange-bg:#fdf1e8;
+  --red:      #c0392b;
+  --red-bg:   #fdf0ee;
+  --finance:  #8b6914;
+  --finance-bg:#fdf8ed;
+  --finance-border: #e8d48a;
+  --anthropic:  #8b4513;
+  --openai:     #0d7a5a;
+  --gemini:     #1a56c2;
+  --grok:       #6b3fa0;
+  --perplexity: #1a6b5a;
+
+  --r-xs: 3px;
+  --r-sm: 5px;
+  --r:    8px;
+  --r-lg: 12px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow:    0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --transition: 0.15s ease;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+button { font-family: var(--font); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+/* ── LAYOUT ── */
+.layout { display: grid; grid-template-columns: 272px 1fr; min-height: calc(100vh - 56px); }
+
+/* ── HEADER ── */
+.header {
+  height: 56px;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: sticky;
+  top: 0;
+  z-index: 300;
+  padding: 0;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  width: 272px;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  height: 100%;
+}
+.brand-mark {
+  width: 28px; height: 28px;
+  background: var(--accent2);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; color: #fff;
+  flex-shrink: 0;
+}
+.brand-text { font-size: 13px; font-weight: 700; letter-spacing: -0.2px; }
+.brand-sub { font-size: 10px; opacity: 0.5; letter-spacing: 0.4px; font-weight: 400; }
+
+.header-controls {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  overflow-x: auto;
+}
+.header-filters { display: flex; gap: 4px; align-items: center; flex-wrap: nowrap; }
+.hchip {
+  padding: 4px 11px;
+  border-radius: 99px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: transparent;
+  color: rgba(255,255,255,0.65);
+  font-size: 11px; font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 5px;
+}
+.hchip:hover { color: #fff; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
+.hchip.active { background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.4); }
+.hchip.fin.active { background: var(--finance-bg); border-color: var(--finance-border); color: var(--finance); }
+.hdivider { width: 1px; height: 18px; background: rgba(255,255,255,0.15); flex-shrink: 0; margin: 0 4px; }
+
+.header-right {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 16px;
+  border-left: 1px solid rgba(255,255,255,0.1);
+  height: 100%;
+  flex-shrink: 0;
+}
+.live-pill {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.5px;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: livePulse 2s ease-in-out infinite;
+}
+@keyframes livePulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+  50% { box-shadow: 0 0 0 4px rgba(74,222,128,0); }
+}
+.countdown-display {
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  font-variant-numeric: tabular-nums;
+  min-width: 52px;
+  text-align: right;
+}
+.countdown-display.soon { color: #fb923c; }
+.refresh-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.8);
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  font-size: 11px; font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex; align-items: center; gap: 5px;
+}
+.refresh-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+.refresh-icon { display: inline-block; transition: transform 0.6s ease; }
+.refresh-btn.spinning .refresh-icon { animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  height: calc(100vh - 56px);
+  position: sticky;
+  top: 56px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.sb-section {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sb-label {
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Stats */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.stat-cell {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 12px;
+}
+.stat-n { font-size: 22px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+.stat-l { font-size: 9px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+
+/* Company list */
+.company-list { display: flex; flex-direction: column; gap: 2px; }
+.co-row {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 9px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+.co-row:hover { background: var(--bg); }
+.co-row.active { background: var(--bg2); border-color: var(--border2); }
+.co-pip { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.co-name { font-size: 12px; font-weight: 600; flex: 1; color: var(--text2); }
+.co-count {
+  font-size: 10px; font-weight: 700;
+  background: var(--bg2);
+  color: var(--muted);
+  padding: 1px 7px; border-radius: 99px;
+}
+.co-row.active .co-count { background: var(--accent); color: #fff; }
+
+/* Type filter */
+.type-list { display: flex; flex-direction: column; gap: 1px; }
+.type-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 9px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+.type-row:hover { background: var(--bg); }
+.type-row.active { background: var(--bg2); border-color: var(--border2); }
+.type-label { font-size: 11px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+.type-n { font-size: 10px; font-weight: 700; color: var(--muted2); }
+
+/* Finance spotlight */
+.finance-spotlight {
+  border: 1px solid var(--finance-border);
+  border-radius: var(--r);
+  padding: 11px 12px;
+  background: var(--finance-bg);
+}
+.fs-header {
+  font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--finance); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 5px;
+}
+.fs-item {
+  display: flex; align-items: flex-start; gap: 7px;
+  padding: 6px 0; border-bottom: 1px solid rgba(139,105,20,0.1);
+  cursor: pointer; transition: opacity var(--transition);
+}
+.fs-item:last-child { border-bottom: none; padding-bottom: 0; }
+.fs-item:hover { opacity: 0.75; }
+.fs-ico { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.fs-body { flex: 1; min-width: 0; }
+.fs-title { font-size: 11px; color: var(--text); line-height: 1.35;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.fs-meta { font-size: 10px; color: var(--finance); margin-top: 1px; }
+
+/* Alert log */
+.alert-list { display: flex; flex-direction: column; gap: 2px; }
+.alert-row {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 6px 7px; border-radius: var(--r-sm);
+  cursor: pointer; transition: background var(--transition);
+}
+.alert-row:hover { background: var(--bg); }
+.alert-pip-wrap { padding-top: 5px; }
+.alert-pip { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.alert-text { font-size: 11px; color: var(--text2); line-height: 1.35; flex: 1;
+  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.alert-time { font-size: 10px; color: var(--muted2); white-space: nowrap; padding-top: 2px; }
+
+/* Social sidebar */
+.social-list { display: flex; flex-direction: column; gap: 4px; }
+.social-row {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 7px 8px; border-radius: var(--r);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer; text-decoration: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.social-row:hover { border-color: var(--border2); box-shadow: var(--shadow-sm); }
+.social-row.fin { border-left: 2px solid var(--finance-border); }
+.sr-platform { font-size: 11px; font-weight: 800; flex-shrink: 0; }
+.sr-body { flex: 1; min-width: 0; }
+.sr-handle { font-size: 10px; font-weight: 700; color: var(--accent2); }
+.sr-text { font-size: 10px; color: var(--muted); line-height: 1.4;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.sr-eng { font-size: 9px; color: var(--muted2); margin-top: 2px; }
+.sr-fin { font-size: 9px; color: var(--finance); flex-shrink: 0; margin-top: 1px; }
+
+/* ── MAIN ── */
+.main { padding: 24px; overflow-y: auto; }
+
+/* View tabs */
+.view-tabs {
+  display: flex; gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 3px;
+  width: fit-content;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+.vtab {
+  padding: 6px 16px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px; font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex; align-items: center; gap: 6px;
+  letter-spacing: 0.1px;
+}
+.vtab:hover { color: var(--text2); background: var(--bg); }
+.vtab.active { background: var(--accent); color: #fff; box-shadow: var(--shadow-sm); }
+
+/* ── LOG VIEW ── */
+.log-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+}
+.log-title { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+.log-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.sort-bar { display: flex; align-items: center; gap: 6px; }
+.sort-label { font-size: 11px; color: var(--muted); }
+.sort-sel {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 5px 10px; border-radius: var(--r-sm);
+  font-size: 11px; font-weight: 600;
+  cursor: pointer; outline: none;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Release cards */
+.releases { display: flex; flex-direction: column; gap: 10px; }
+
+.rcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), border-color var(--transition);
+  contain: layout style;
+}
+.rcard:hover { box-shadow: var(--shadow); }
+.rcard.fin { border-left: 3px solid var(--finance-border); }
+.rcard.isnew { border-left: 3px solid #4ade80; }
+.rcard.fin.isnew { border-left: 3px solid var(--finance-border); }
+
+.rcard-top {
+  padding: 14px 16px;
+  display: flex; gap: 12px; align-items: flex-start;
+  cursor: pointer;
+}
+.rcard-badge {
+  width: 38px; height: 38px; border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 900; flex-shrink: 0;
+  letter-spacing: -1px; font-style: italic;
+}
+.badge-anthropic   { background: #fdf0e8; color: var(--anthropic); }
+.badge-openai      { background: #eaf5f0; color: var(--openai); }
+.badge-perplexity  { background: #e8f5f2; color: var(--perplexity); }
+.badge-gemini    { background: #eaeffd; color: var(--gemini); }
+.badge-grok      { background: #f3eefa; color: var(--grok); }
+.badge-other     { background: var(--bg2); color: var(--muted); }
+
+.rcard-body { flex: 1; min-width: 0; }
+.rcard-tags { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-bottom: 5px; }
+
+.tag {
+  font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px;
+  padding: 2px 7px; border-radius: var(--r-xs);
+}
+.tag-model       { background: #ede9ff; color: #5a3fd4; }
+.tag-update      { background: #e8f0ff; color: var(--accent2); }
+.tag-partnership { background: var(--green-bg); color: var(--green); }
+.tag-api         { background: var(--orange-bg); color: var(--orange); }
+.tag-feature     { background: #fff0f3; color: #c0184a; }
+.tag-research    { background: #eafaf4; color: #0f6b43; }
+.tag-new         { background: #dcfce7; color: #15803d; }
+.tag-fin         { background: var(--finance-bg); color: var(--finance); border: 1px solid var(--finance-border); }
+
+.rcard-title {
+  font-size: 14px; font-weight: 700; line-height: 1.35;
+  letter-spacing: -0.2px;
+  color: var(--text);
+}
+.rcard-meta {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 4px; flex-wrap: wrap;
+}
+.rcard-co { font-size: 11px; font-weight: 700; }
+.rcard-date { font-size: 11px; color: var(--muted); }
+.dot { color: var(--muted2); font-size: 9px; }
+
+.rcard-right {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0;
+}
+.expand-btn {
+  width: 26px; height: 26px; border-radius: var(--r-sm);
+  background: var(--bg); border: 1px solid var(--border2);
+  color: var(--muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; transition: var(--transition);
+}
+.expand-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.expand-btn.open { background: var(--accent); border-color: var(--accent); color: #fff; transform: rotate(180deg); }
+.src-link {
+  font-size: 10px; color: var(--accent2); font-weight: 600;
+  text-decoration: none; padding: 2px 6px;
+  border: 1px solid rgba(45,91,227,0.18);
+  border-radius: var(--r-xs);
+  display: flex; align-items: center; gap: 3px;
+  transition: var(--transition);
+}
+.src-link:hover { background: rgba(45,91,227,0.06); }
+
+.rcard-summary {
+  padding: 0 16px 12px 66px;
+  font-size: 12px; color: var(--text2); line-height: 1.6;
+}
+
+/* Expanded detail */
+.rcard-detail { display: none; border-top: 1px solid var(--border); }
+.rcard-detail.open { display: block; }
+
+.detail-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 720px) { .detail-grid { grid-template-columns: 1fr; } }
+
+.dbox {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px;
+}
+.dbox-title {
+  font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 5px;
+}
+.dlist { display: flex; flex-direction: column; gap: 4px; }
+.ditem { display: flex; gap: 7px; font-size: 11px; line-height: 1.5; }
+.dbullet { flex-shrink: 0; margin-top: 3px; font-size: 8px; }
+.dbullet-green  { color: var(--green); }
+.dbullet-blue   { color: var(--accent2); }
+.dbullet-fin    { color: var(--finance); }
+
+/* Version comparison */
+.compare-panel {
+  border: 1px solid #e0e0f0;
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--surface);
+}
+.compare-panel-header {
+  padding: 9px 12px;
+  background: #f0f0fa;
+  border-bottom: 1px solid #e0e0f0;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+  color: #3a3a8a;
+  display: flex; align-items: center; gap: 6px;
+}
+.ctable { width: 100%; border-collapse: collapse; font-size: 11px; }
+.ctable th {
+  text-align: left; padding: 6px 10px;
+  background: var(--bg2);
+  color: var(--muted); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px;
+  border-bottom: 1px solid var(--border);
+}
+.ctable td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.4; }
+.ctable tr:last-child td { border-bottom: none; }
+.ctable .cat { font-weight: 700; color: var(--text2); font-size: 10px; }
+.val-before { color: var(--muted); text-decoration: line-through; font-size: 10px; }
+.val-after  { color: var(--green); font-weight: 600; }
+.val-impact { color: var(--text2); font-size: 10px; }
+
+/* Finance impact */
+.fin-panel {
+  border: 1px solid var(--finance-border);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--finance-bg);
+}
+.fin-panel-header {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--finance-border);
+  font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--finance); display: flex; align-items: center; gap: 6px;
+}
+.fin-panel-body { padding: 12px; }
+.automation-box {
+  display: flex; gap: 8px; align-items: flex-start;
+  margin-top: 10px; padding: 9px 11px;
+  background: var(--green-bg);
+  border: 1px solid rgba(29,122,79,0.18);
+  border-radius: var(--r-sm);
+  font-size: 11px; color: var(--text2); line-height: 1.5;
+}
+.automation-ico { color: var(--green); flex-shrink: 0; font-size: 13px; margin-top: 1px; }
+
+/* Social posts panel */
+.social-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--surface);
+}
+.social-panel-header {
+  padding: 9px 12px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--muted); display: flex; align-items: center; gap: 6px;
+}
+.social-posts { display: flex; flex-direction: column; gap: 0; }
+.spost {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 5px;
+}
+.spost:last-child { border-bottom: none; }
+.spost.fin { border-left: 2px solid var(--finance-border); }
+.spost-top { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.plat-badge {
+  font-size: 9px; font-weight: 800;
+  padding: 2px 6px; border-radius: var(--r-xs);
+}
+.plat-x  { background: #1a1a1a; color: #fff; }
+.plat-li { background: #e8f0fb; color: #0a66c2; }
+.spost-handle { font-size: 11px; font-weight: 700; color: var(--accent2); }
+.spost-eng {
+  margin-left: auto; font-size: 10px; color: var(--muted2);
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+}
+.eng-stat { display: flex; align-items: center; gap: 3px; }
+.fin-sig {
+  font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: var(--r-xs);
+  background: var(--finance-bg); color: var(--finance); border: 1px solid var(--finance-border);
+}
+.spost-excerpt { font-size: 11px; color: var(--text2); line-height: 1.5; font-style: italic; }
+.spost-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 700; color: var(--accent2);
+  text-decoration: none; padding: 3px 8px;
+  border: 1px solid rgba(45,91,227,0.2);
+  border-radius: var(--r-xs);
+  transition: var(--transition); width: fit-content;
+}
+.spost-link:hover { background: rgba(45,91,227,0.06); }
+
+/* Source links */
+.source-links { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px; border-top: 1px solid var(--border); }
+.source-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: var(--r-sm);
+  border: 1px solid var(--border2);
+  color: var(--text2); text-decoration: none;
+  font-size: 10px; font-weight: 600;
+  background: var(--bg);
+  transition: var(--transition);
+}
+.source-link:hover { border-color: var(--accent2); color: var(--accent2); box-shadow: var(--shadow-sm); }
+
+/* ── COMPARE VIEW ── */
+.compare-view { display: none; }
+.compare-selector {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px; flex-wrap: wrap;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+.csel-label { font-size: 11px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.csel {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 6px 10px; border-radius: var(--r-sm);
+  font-size: 12px; outline: none; cursor: pointer;
+  flex: 1; min-width: 180px; max-width: 300px;
+  box-shadow: var(--shadow-sm);
+}
+.vs-badge {
+  font-size: 11px; font-weight: 800; color: var(--muted2);
+  padding: 4px 8px; background: var(--bg2); border-radius: var(--r-sm);
+  flex-shrink: 0;
+}
+.compare-go {
+  background: var(--accent); border: none; color: #fff;
+  padding: 7px 16px; border-radius: var(--r-sm);
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  transition: var(--transition); flex-shrink: 0;
+}
+.compare-go:hover { background: #2d2d4e; }
+
+.compare-result { display: none; }
+.compare-result.visible { display: block; }
+.compare-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+@media (max-width: 700px) { .compare-cards { grid-template-columns: 1fr; } }
+.cc-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.cc-header { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+.cc-title { font-size: 13px; font-weight: 700; }
+.cc-date { font-size: 10px; color: var(--muted); }
+.cc-summary { font-size: 11px; color: var(--text2); line-height: 1.55; margin-bottom: 8px; }
+.cc-features { display: flex; flex-direction: column; gap: 3px; }
+.cc-feat { font-size: 11px; display: flex; gap: 6px; }
+.cc-feat-bullet { color: var(--green); flex-shrink: 0; font-size: 9px; margin-top: 3px; }
+
+.diff-table-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden;
+  box-shadow: var(--shadow-sm); margin-top: 4px;
+}
+.diff-table-title {
+  padding: 10px 14px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--muted); background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.dtable { width: 100%; border-collapse: collapse; font-size: 11px; }
+.dtable th {
+  text-align: left; padding: 7px 12px;
+  background: var(--bg);
+  color: var(--muted); font-size: 9px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  border-bottom: 1px solid var(--border);
+}
+.dtable td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.45; }
+.dtable tr:last-child td { border-bottom: none; }
+.dtable .dcat { font-weight: 700; font-size: 10px; color: var(--text2); white-space: nowrap; }
+.dval-a { color: var(--accent2); font-weight: 600; }
+.dval-b { color: var(--openai); font-weight: 600; }
+.dimpact { color: var(--text2); font-size: 10px; }
+.no-data { color: var(--muted2); }
+
+/* ── TIMELINE VIEW ── */
+.timeline-view { display: none; }
+.timeline-wrap { position: relative; padding-left: 28px; }
+.timeline-wrap::before {
+  content: ''; position: absolute; left: 7px; top: 0; bottom: 0;
+  width: 1px; background: linear-gradient(to bottom, var(--accent2), transparent);
+}
+.tl-group { margin-bottom: 22px; }
+.tl-month-label {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; font-weight: 800; color: var(--muted);
+  margin-bottom: 8px; letter-spacing: 0.3px;
+}
+.tl-month-line { flex: 1; height: 1px; background: var(--border); }
+.tl-count {
+  font-size: 9px; font-weight: 800;
+  background: var(--bg2); color: var(--muted2);
+  padding: 1px 7px; border-radius: 99px; border: 1px solid var(--border);
+}
+.tl-items { display: flex; flex-direction: column; gap: 6px; }
+.tl-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 10px 12px;
+  cursor: pointer; transition: var(--transition);
+  box-shadow: var(--shadow-sm); position: relative;
+}
+.tl-item::before {
+  content: ''; position: absolute; left: -21px; top: 18px;
+  width: 10px; height: 1px; background: var(--border2);
+}
+.tl-item:hover { border-color: var(--border2); box-shadow: var(--shadow); }
+.tl-item.fin { border-left: 2px solid var(--finance-border); }
+.tl-badge {
+  width: 30px; height: 30px; border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 900; flex-shrink: 0; font-style: italic;
+}
+.tl-content { flex: 1; min-width: 0; }
+.tl-title { font-size: 12px; font-weight: 700; line-height: 1.35; margin-bottom: 3px; }
+.tl-meta { font-size: 10px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; }
+.tl-tags { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+
+/* ── TOAST ── */
+.toast-dock {
+  position: fixed; top: 64px; right: 14px;
+  display: flex; flex-direction: column; gap: 6px;
+  z-index: 999; pointer-events: none; width: 300px;
+}
+.toast {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 11px 13px;
+  box-shadow: var(--shadow-lg);
+  display: flex; align-items: flex-start; gap: 9px;
+  pointer-events: all;
+  animation: toastIn 0.25s ease;
+}
+@keyframes toastIn {
+  from { transform: translateX(110%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+.toast.fadeout { animation: toastOut 0.3s ease forwards; }
+@keyframes toastOut {
+  to { transform: translateX(110%); opacity: 0; }
+}
+.toast-ico  { font-size: 16px; flex-shrink: 0; }
+.toast-body { flex: 1; }
+.toast-title { font-size: 12px; font-weight: 700; margin-bottom: 1px; }
+.toast-msg  { font-size: 11px; color: var(--text2); line-height: 1.4; }
+.toast-x {
+  background: none; border: none; color: var(--muted2);
+  cursor: pointer; font-size: 14px; padding: 0; flex-shrink: 0;
+  line-height: 1;
+}
+.toast-x:hover { color: var(--text); }
+
+/* ── REFRESH BANNER ── */
+.refresh-banner {
+  display: none; position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff;
+  padding: 10px 20px; border-radius: 99px;
+  font-size: 12px; font-weight: 700;
+  box-shadow: var(--shadow-lg); z-index: 500;
+  cursor: pointer; display: none; align-items: center; gap: 8px;
+  animation: bannerIn 0.3s ease;
+}
+@keyframes bannerIn { from { transform: translateX(-50%) translateY(20px); opacity: 0; } }
+.refresh-banner.show { display: flex; }
+
+/* Empty / loading */
+.empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-ico { font-size: 32px; margin-bottom: 10px; opacity: 0.35; }
+.empty h3 { font-size: 15px; font-weight: 800; color: var(--text2); margin-bottom: 4px; }
+.spinner-wrap { display: flex; justify-content: center; padding: 40px 0; }
+.spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border2);
+  border-top-color: var(--accent2);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .header-brand { width: auto; }
+}
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-brand">
+    <div class="brand-mark">AI</div>
+    <div>
+      <div class="brand-text">Release Intelligence</div>
+      <div class="brand-sub">LIVE TRACKER</div>
+    </div>
+  </div>
+
+  <div class="header-controls">
+    <div class="header-filters" id="headerFilters">
+      <button class="hchip active" data-filter="all" onclick="setFilter('all')">All</button>
+      <div class="hdivider"></div>
+      <button class="hchip" data-filter="anthropic" onclick="setFilter('anthropic')">Anthropic</button>
+      <button class="hchip" data-filter="openai"    onclick="setFilter('openai')">OpenAI</button>
+      <button class="hchip" data-filter="gemini"    onclick="setFilter('gemini')">Gemini</button>
+      <button class="hchip" data-filter="grok"        onclick="setFilter('grok')">Grok</button>
+      <button class="hchip" data-filter="perplexity" onclick="setFilter('perplexity')">Perplexity</button>
+      <div class="hdivider"></div>
+      <button class="hchip fin" data-filter="finance" onclick="setFilter('finance')">💰 Finance</button>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="live-pill"><div class="live-dot"></div> LIVE</div>
+    <div class="countdown-display" id="countdownDisplay">—</div>
+    <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">
+      <span class="refresh-icon" id="refreshIcon">↻</span> Refresh
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <!-- Stats -->
+    <div class="sb-section">
+      <span class="sb-label">Overview</span>
+      <div class="stats-grid">
+        <div class="stat-cell">
+          <div class="stat-n" id="statTotal" style="color:var(--accent)">—</div>
+          <div class="stat-l">Total</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-n" id="statNew" style="color:var(--green)">—</div>
+          <div class="stat-l">This Week</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-n" id="statModels" style="color:var(--accent2)">—</div>
+          <div class="stat-l">Models</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-n" id="statFin" style="color:var(--finance)">—</div>
+          <div class="stat-l">Finance</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Company -->
+    <div class="sb-section">
+      <span class="sb-label">By Company</span>
+      <div class="company-list">
+        <div class="co-row" onclick="setFilter('anthropic')" id="co-anthropic">
+          <div class="co-pip" style="background:var(--anthropic)"></div>
+          <div class="co-name">Anthropic</div>
+          <div class="co-count" id="cnt-anthropic">—</div>
+        </div>
+        <div class="co-row" onclick="setFilter('openai')" id="co-openai">
+          <div class="co-pip" style="background:var(--openai)"></div>
+          <div class="co-name">OpenAI</div>
+          <div class="co-count" id="cnt-openai">—</div>
+        </div>
+        <div class="co-row" onclick="setFilter('gemini')" id="co-gemini">
+          <div class="co-pip" style="background:var(--gemini)"></div>
+          <div class="co-name">Google Gemini</div>
+          <div class="co-count" id="cnt-gemini">—</div>
+        </div>
+        <div class="co-row" onclick="setFilter('grok')" id="co-grok">
+          <div class="co-pip" style="background:var(--grok)"></div>
+          <div class="co-name">xAI / Grok</div>
+          <div class="co-count" id="cnt-grok">—</div>
+        </div>
+        <div class="co-row" onclick="setFilter('perplexity')" id="co-perplexity">
+          <div class="co-pip" style="background:var(--perplexity)"></div>
+          <div class="co-name">Perplexity</div>
+          <div class="co-count" id="cnt-perplexity">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Type -->
+    <div class="sb-section">
+      <span class="sb-label">By Type</span>
+      <div class="type-list" id="typeList">
+        <div class="type-row" onclick="setTypeFilter('model')"       data-type="model">       <span class="type-label">🤖 Model Release</span> <span class="type-n" id="cnt-model">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('update')"      data-type="update">      <span class="type-label">⚡ Model Update</span>  <span class="type-n" id="cnt-update">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('partnership')" data-type="partnership"> <span class="type-label">🤝 Partnership</span>    <span class="type-n" id="cnt-partnership">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('api')"         data-type="api">         <span class="type-label">🔌 API / Platform</span><span class="type-n" id="cnt-api">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('feature')"     data-type="feature">     <span class="type-label">✨ Feature</span>        <span class="type-n" id="cnt-feature">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('research')"    data-type="research">    <span class="type-label">🔬 Research</span>       <span class="type-n" id="cnt-research">—</span></div>
+      </div>
+    </div>
+
+    <!-- Finance Spotlight -->
+    <div class="sb-section">
+      <span class="sb-label">💰 Finance Spotlight</span>
+      <div class="finance-spotlight">
+        <div class="fs-header">High-Impact Releases</div>
+        <div id="financeSpotlight"><div style="font-size:11px;color:var(--muted)">Loading…</div></div>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="sb-section">
+      <span class="sb-label">Recent Alerts</span>
+      <div class="alert-list" id="alertList">
+        <div style="font-size:11px;color:var(--muted)">No alerts yet.</div>
+      </div>
+    </div>
+
+    <!-- Top Social Posts -->
+    <div class="sb-section">
+      <span class="sb-label">🔥 Top Social Posts</span>
+      <div class="social-list" id="topSocialList">
+        <div style="font-size:11px;color:var(--muted)">Loading…</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="mainArea">
+    <!-- View tabs -->
+    <div class="view-tabs" role="tablist">
+      <button class="vtab active" id="tab-log"      onclick="switchView('log')"     role="tab">📋 Release Log</button>
+      <button class="vtab"        id="tab-compare"  onclick="switchView('compare')" role="tab">⚡ Compare</button>
+      <button class="vtab"        id="tab-timeline" onclick="switchView('timeline')" role="tab">📅 Timeline</button>
+    </div>
+
+    <!-- LOG VIEW -->
+    <div id="logView">
+      <div class="log-header">
+        <div>
+          <div class="log-title" id="logTitle">All Releases</div>
+          <div class="log-meta" id="logMeta">Loading…</div>
+        </div>
+        <div class="sort-bar">
+          <span class="sort-label">Sort:</span>
+          <select class="sort-sel" id="sortSel" onchange="applySort()">
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="finance">Finance Impact</option>
+            <option value="company">By Company</option>
+          </select>
+        </div>
+      </div>
+      <div class="releases" id="releasesContainer">
+        <div class="spinner-wrap"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- COMPARE VIEW -->
+    <div class="compare-view" id="compareView">
+      <div class="compare-selector">
+        <span class="csel-label">Compare:</span>
+        <select class="csel" id="compareA"><option value="">Select first release…</option></select>
+        <div class="vs-badge">VS</div>
+        <select class="csel" id="compareB"><option value="">Select second release…</option></select>
+        <button class="compare-go" onclick="runCompare()">Compare →</button>
+      </div>
+      <div class="compare-result" id="compareResult"></div>
+    </div>
+
+    <!-- TIMELINE VIEW -->
+    <div class="timeline-view" id="timelineView">
+      <div class="timeline-wrap" id="timelineContainer">
+        <div class="spinner-wrap"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Refresh banner -->
+<div class="refresh-banner" id="refreshBanner" onclick="applyPendingUpdate()">
+  ↻ New updates available — click to refresh
+</div>
+
+<!-- Toast dock -->
+<div class="toast-dock" id="toastDock"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// RELEASES DATA
+// ═══════════════════════════════════════════════════════════
+const RELEASES = [
+  {
+    id:'claude-for-finance',company:'anthropic',type:'partnership',
+    title:'Claude for Financial Services — S&P Global, LSEG & Analyst Toolkit',
+    date:'2025-07-15',financeImpact:true,financeImpactLevel:'high',
+    summary:"Anthropic's landmark finance initiative: live S&P Capital IQ data, LSEG market data MCP server, an Excel add-in, and pre-built Agent Skills for cash flow models and initiating coverage reports. Disrupted Bloomberg Terminal and FactSet stocks on announcement day.",
+    whatsNew:[
+      'S&P Global / Kensho: live Capital IQ data (financials, credit ratings, ESG) via Claude tool use',
+      'LSEG MCP server: real-time market data and analytics natively in Claude',
+      'Excel add-in: AI-powered financial modeling directly in spreadsheets',
+      'Pre-built Agent Skills: cash flow models, initiating coverage reports',
+      'Full investment recommendation memo demo in under 30 minutes',
+      'Sent shockwaves through Bloomberg Terminal and FactSet stocks',
+    ],
+    vsLastVersion:null,
+    financeImpact_detail:{
+      headline:'🔥 Highest Finance Impact — Direct Analyst Workflow Integration',
+      impacts:[
+        'Ask Claude to "pull Q3 EBITDA for MSFT, AAPL, GOOGL and compare margins" — live S&P Capital IQ natively',
+        'LSEG Workspace MCP server: tick data, price history, news feeds in natural language',
+        'Excel add-in: generate financial models with AI prompts inside spreadsheets',
+        'Pre-built "Initiating Coverage Report" skill: draft sell-side reports with one command',
+        'Cash flow model skill: build DCF/FCFF models from natural language inputs',
+        'Full memo: source → thesis → risks → model compressed to <30 min',
+      ],
+      automation:'This is the single biggest shift for financial analysts in 2025: Claude now has live financial data access, an Excel add-in, and pre-packaged analyst workflows. Tasks that took 2–3 hours can now be started with a single prompt.',
+    },
+    socialPosts:[
+      {platform:'X',handle:'@AnthropicAI',url:'https://x.com/AnthropicAI/status/1945889476556853520',
+        excerpt:"We've launched Claude for Financial Services. Claude now integrates with leading data platforms for real-time access to comprehensive financial information, verified across internal and industry sources.",
+        engagement:{views:'745K',likes:'5,800',reposts:'723'},financeSignal:true},
+      {platform:'X',handle:'@FundamentEdge (Brett Caughran, ex-Citadel PM)',url:'https://x.com/FundamentEdge/status/1945184544799244311',
+        excerpt:"Claude for Financial Services Keynote (getting a lot of buzz today) — buy-side practitioner reaction.",
+        engagement:{views:'71.8K',likes:'—'},financeSignal:true},
+      {platform:'X',handle:'@Rahul_J_Mathur',url:'https://x.com/Rahul_J_Mathur/status/1945478278506266680',
+        excerpt:"Incredible to see Anthropic take Perplexity head on in Financial Services. Demo showed an Analyst create a complete investment recommendation memo in less than 30 minutes.",
+        engagement:{views:'26K',likes:'—'},financeSignal:true},
+      {platform:'X',handle:'@AnthropicAI (LSEG + Excel expansion)',url:'https://x.com/AnthropicAI/status/1982842909235040731',
+        excerpt:"We're expanding Claude for Financial Services, with an Excel add-in, new connectors to real-time data and market analytics, and pre-built Agent Skills, including cash flow models and initiating coverage reports.",
+        engagement:{views:'3.2M',likes:'—'},financeSignal:true},
+      {platform:'LinkedIn',handle:'London Stock Exchange Group (LSEG)',url:'https://www.linkedin.com/posts/london-stock-exchange-group_together-with-anthropic-were-introducing-activity-7432077266735685633-kXsB/',
+        excerpt:"Together with Anthropic, we're introducing AI-powered capabilities for financial markets — bringing Claude's intelligence to LSEG Workspace and market data workflows.",
+        engagement:{views:'—',likes:'—'},financeSignal:true},
+    ],
+    sources:[
+      {label:'Anthropic Financial Services Blog',url:'https://www.anthropic.com/news/advancing-claude-for-financial-services'},
+      {label:'Kensho / S&P Blog',url:'https://blog.kensho.com/s-p-global-brings-financial-skills-to-ai-agents-with-new-plugin-bc8aef47c476'},
+      {label:'S&P Global Press Release',url:'https://press.spglobal.com/2025-07-15-S-P-Global-and-Anthropic-Announce-Integration-of-S-P-Globals-Trusted-Financial-Data-into-Claude'},
+      {label:'LSEG Press Release',url:'https://www.lseg.com/en/media-centre/press-releases/2025/lseg-announces-collaboration-with-anthropic'},
+      {label:'LSEG LinkedIn',url:'https://www.linkedin.com/posts/london-stock-exchange-group_together-with-anthropic-were-introducing-activity-7432077266735685633-kXsB/'},
+      {label:'CNBC Coverage',url:'https://www.cnbc.com/2025/07/15/claude-ai-financial-anthropic-amazon.html'},
+    ]
+  },
+  {
+    id:'claude-opus-4-6',company:'anthropic',type:'model',
+    title:'Claude Opus 4.6 — 1M Token Context, Self-Correction',
+    date:'2025-10-15',financeImpact:true,financeImpactLevel:'high',
+    summary:"Anthropic's most powerful model. First Opus with 1M token context in beta. Plans more carefully, sustains agentic tasks longer, catches its own mistakes. The premier tool for high-stakes financial analysis — reads full annual reports, M&A due diligence, and complex derivatives in one session.",
+    whatsNew:[
+      '1M token context window (beta) — first Opus-class model with this',
+      'Plans more carefully, sustains agentic tasks for longer',
+      'Catches its own mistakes mid-workflow',
+      'Top performance on GPQA (graduate-level reasoning)',
+      'Best handling of complete 10-K annual reports end-to-end',
+      'Powers Claude for Financial Services analyst skill demos',
+    ],
+    vsLastVersion:{
+      title:'Claude Opus 4 → Opus 4.6',
+      rows:[
+        {category:'Context Window',before:'200K tokens',after:'1M tokens (beta)',impact:'Entire earnings histories, full prospectuses — no chunking needed'},
+        {category:'Agentic Planning',before:'Good',after:'Significantly improved',impact:'Sustained due diligence pipelines without task drift'},
+        {category:'Self-Correction',before:'Limited',after:'Catches its own mistakes',impact:'Reduces analyst review burden on AI outputs'},
+        {category:'Reasoning',before:'Excellent',after:'State-of-the-art on GPQA',impact:'Multi-company M&A analysis in one session'},
+        {category:'Long Doc Handling',before:'Chunked at 200K',after:'1M full utilization',impact:'Complete annual reports without file splitting'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Premier Tool for High-Stakes Financial Work',
+      impacts:[
+        '1M token context: read full annual reports, 5-year earnings history, and supplementary filings in ONE prompt',
+        'Multi-company competitive analysis with cross-referencing in a single session',
+        'M&A due diligence drafts and risk assessment — no chunking required',
+        'Self-correction reduces errors in complex multi-step financial models',
+        'Highest accuracy on regulatory compliance review (SEC, IFRS, Basel III)',
+      ],
+      automation:'Opus 4.6 can autonomously complete full investment memo drafts — reading source documents, forming a thesis, and flagging risks — a workflow that previously required an associate analyst 2–3 days.',
+    },
+    socialPosts:[
+      {platform:'X',handle:'@claudeai',url:'https://x.com/claudeai/status/2019467372609040752',
+        excerpt:"Introducing Claude Opus 4.6. Our smartest model got an upgrade. Opus 4.6 plans more carefully, sustains agentic tasks for longer, catches its own mistakes. It's our first Opus with 1M token context in beta.",
+        engagement:{views:'—',likes:'—'},financeSignal:true},
+    ],
+    sources:[
+      {label:'@claudeai on X',url:'https://x.com/claudeai/status/2019467372609040752'},
+      {label:'Anthropic Blog',url:'https://www.anthropic.com/news'},
+      {label:'API Reference',url:'https://docs.anthropic.com/en/docs/about-claude/models'},
+    ]
+  },
+  {
+    id:'claude-sonnet-4-5',company:'anthropic',type:'model',
+    title:'Claude Sonnet 4.5 — Claude 4 Architecture Launch',
+    date:'2025-05-22',financeImpact:true,financeImpactLevel:'high',
+    summary:'Major capability leap introducing the Claude 4 architecture with dramatically improved reasoning, Computer Use v2, and web search. Set a new bar for analyst-grade AI. Stock markets for financial data terminal providers fell on announcement day.',
+    whatsNew:[
+      'Claude 4 architecture — entirely new training paradigm',
+      'Computer Use v2 — production-ready browser and desktop automation',
+      'Native web search integration (when enabled)',
+      'Improved financial document comprehension',
+      'Best-in-class instruction following',
+      'Disrupted Bloomberg Terminal and FactSet stock prices',
+    ],
+    vsLastVersion:{
+      title:'Claude 3.7 Sonnet → Claude 4.5',
+      rows:[
+        {category:'Architecture',before:'Claude 3.x',after:'Claude 4 (new training)',impact:'Fundamentally better at sustained complex tasks'},
+        {category:'Web Search',before:'Not available natively',after:'Integrated (when enabled)',impact:'Real-time market data lookups possible'},
+        {category:'Computer Use',before:'v1 — unreliable',after:'v2 — production-ready',impact:'Automate Bloomberg/FactSet UI interactions reliably'},
+        {category:'Instruction Following',before:'Good',after:'Excellent',impact:'More reliable report templates and structured outputs'},
+        {category:'MMLU Benchmark',before:'~85%',after:'~91%',impact:'More accurate domain knowledge across finance topics'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Major Architecture Upgrade — New Baseline for Finance Workflows',
+      impacts:[
+        'Computer Use v2 allows automating repetitive data-entry tasks in trading platforms',
+        'Web search enables real-time news/price context in analysis',
+        'New architecture dramatically improves long-horizon task reliability',
+        'Better at understanding nuanced regulatory language (SEC filings, IFRS vs GAAP)',
+        'Improved reasoning reduces need for human re-checking of complex models',
+      ],
+      automation:'With Claude 4.5, financial analysts could for the first time reliably automate: portfolio commentary drafts, SEC filing cross-references, and multi-source data synthesis — replacing several hours of manual work per week.',
+    },
+    socialPosts:[
+      {platform:'X',handle:'@AnthropicAI',url:'https://x.com/AnthropicAI/status/1925591505332576377',
+        excerpt:"Introducing the next generation: Claude Opus 4 and Claude Sonnet 4. Claude Opus 4 is our most powerful model yet, and the world's best coding model. Claude Sonnet 4 delivers superior coding and reasoning.",
+        engagement:{views:'—',likes:'~20K'},financeSignal:false},
+    ],
+    sources:[
+      {label:'Anthropic Blog',url:'https://www.anthropic.com/news/claude-4'},
+      {label:'Model Docs',url:'https://docs.anthropic.com/en/docs/about-claude/models'},
+    ]
+  },
+  {
+    id:'claude-sonnet-4-6',company:'anthropic',type:'update',
+    title:'Claude Sonnet 4.6 — Extended Thinking + Parallel Tool Use',
+    date:'2025-11-14',financeImpact:true,financeImpactLevel:'high',
+    summary:'Latest Sonnet iteration with extended thinking mode, parallel function calling, and reduced hallucination rates. Powers the current Claude Code experience and excels at multi-step financial analysis workflows.',
+    whatsNew:[
+      'Extended thinking mode with deeper chain-of-thought reasoning',
+      'Parallel function calling — multiple tools simultaneously',
+      'Reduced hallucination rate vs Sonnet 4.5',
+      'Better code generation across 50+ languages',
+      'Faster response times on complex financial document analysis',
+    ],
+    vsLastVersion:{
+      title:'Claude Sonnet 4.5 → 4.6',
+      rows:[
+        {category:'Reasoning',before:'Single-pass thinking',after:'Extended thinking with backtracking',impact:'Catches more errors in multi-step financial analysis'},
+        {category:'Tool Use',before:'Sequential tool calls',after:'Parallel tool calls',impact:'Simultaneous data pulls from multiple APIs (Bloomberg, FactSet)'},
+        {category:'Hallucination Rate',before:'Baseline',after:'Lower',impact:'More reliable for compliance-sensitive outputs'},
+        {category:'Code Quality',before:'Good',after:'Significantly improved',impact:'Better automation scripts for analyst workflows'},
+        {category:'Context Utilization',before:'200K (partial)',after:'200K (improved)',impact:'Better recall across long financial documents'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'High Impact — Best Current Model for Financial Analyst Workflows',
+      impacts:[
+        'Parallel tool use: simultaneous data pulls from Bloomberg, FactSet, S&P via MCP',
+        'Extended thinking excels at multi-step DCF and valuation models in natural language',
+        'Reduced hallucination critical for regulatory filings and compliance reviews',
+        'Better code generation for Python-based quant analysis pipelines',
+        'Faster document summarization: earnings calls, 10-Ks, prospectuses',
+      ],
+      automation:'Analysts can rely on Claude 4.6 to auto-draft earnings summaries, flag material disclosures, and cross-reference multiple data sources in a single prompt — tasks that previously required manual iteration.',
+    },
+    socialPosts:[
+      {platform:'X',handle:'@AnthropicAI',url:'https://x.com/AnthropicAI',
+        excerpt:'Claude Sonnet 4.6 — the latest Sonnet model with extended thinking and parallel tool use, now available via API.',
+        engagement:{views:'—',likes:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'Anthropic Blog',url:'https://www.anthropic.com/news'},
+      {label:'API Docs',url:'https://docs.anthropic.com/en/docs/about-claude/models'},
+    ]
+  },
+  {
+    id:'anthropic-mcp',company:'anthropic',type:'api',
+    title:'Model Context Protocol (MCP) — Open Standard, Now at Linux Foundation',
+    date:'2024-11-25',financeImpact:true,financeImpactLevel:'medium',
+    summary:'Anthropic releases MCP as an open standard enabling AI models to securely connect to external data sources. Now donated to the Linux Foundation. Adopted by OpenAI, Google, and 100s of vendors. S&P Global, LSEG, FactSet, Bloomberg all building MCP servers.',
+    whatsNew:[
+      'Open protocol for AI ↔ tool connectivity — one standard for all data sources',
+      'Adopted by OpenAI, Google, and 100s of vendors within 12 months',
+      'Financial data providers building MCP servers: S&P/Kensho, LSEG, FactSet, Bloomberg',
+      'Local and remote server support',
+      'Donated to Linux Foundation (Agentic AI Foundation) — permanent open standard',
+      '1.4M view announcement post from Alex Albert (Anthropic)',
+    ],
+    vsLastVersion:null,
+    financeImpact_detail:{
+      headline:'Medium-High Impact — The Infrastructure Layer Behind All Finance AI Integrations',
+      impacts:[
+        'S&P/Kensho MCP server: live Capital IQ data in Claude agents',
+        'LSEG MCP server: Workspace market data and analytics natively in Claude',
+        'FactSet and Bloomberg building MCP servers — one protocol for all financial data',
+        'Analysts connect Claude to live market data feeds via MCP without custom code',
+        'Standardized way to build AI-powered compliance and reporting tools',
+      ],
+      automation:"MCP removes the integration friction between AI and financial data. Firms building on MCP get Claude connected to their existing data infrastructure — no custom API engineering required.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@alexalbert__ (Head of Claude Relations, Anthropic)',url:'https://x.com/alexalbert__/status/1861079762506252723',
+        excerpt:"Introducing the Model Context Protocol (MCP). An open standard we've been working on at Anthropic that solves a core challenge with LLM apps — connecting them to your data. No more building custom integrations for every data source.",
+        engagement:{views:'1.4M',likes:'7,200',reposts:'1,400',replies:'5,300'},financeSignal:true},
+      {platform:'X',handle:'@AnthropicAI (Linux Foundation donation)',url:'https://x.com/AnthropicAI/status/1998437922849350141',
+        excerpt:"Anthropic is donating the Model Context Protocol to the Agentic AI Foundation under the Linux Foundation. In one year, MCP has become a foundational protocol for agentic AI.",
+        engagement:{views:'—',likes:'—'},financeSignal:true},
+    ],
+    sources:[
+      {label:'MCP Docs',url:'https://modelcontextprotocol.io'},
+      {label:'Anthropic Blog',url:'https://www.anthropic.com/news/model-context-protocol'},
+      {label:'GitHub',url:'https://github.com/modelcontextprotocol'},
+    ]
+  },
+  {
+    id:'claude-code-launch',company:'anthropic',type:'feature',
+    title:'Claude Code GA — $1B ARR in 6 Months',
+    date:'2025-05-22',financeImpact:false,financeImpactLevel:'low',
+    summary:'Claude Code reaches general availability. Hit $1B ARR in ~6 months — the fastest product to that milestone. Enables complex multi-file code editing, git operations, and automated software engineering. Significant for quant and fintech teams.',
+    whatsNew:[
+      'GA release — production ready',
+      'Full git workflow integration',
+      'MCP server support for tool extensibility',
+      'IDE integrations: VS Code, JetBrains',
+      'Team and enterprise features',
+      '$1B ARR reached in approximately 6 months post-GA',
+    ],
+    vsLastVersion:{
+      title:'Claude Code Beta → GA',
+      rows:[
+        {category:'Stability',before:'Beta — occasional failures',after:'GA — production-ready',impact:'Reliable for daily developer workflows'},
+        {category:'MCP Support',before:'Not supported',after:'Full MCP support',impact:'Extensible tool ecosystem for financial data'},
+        {category:'Enterprise',before:'Individual only',after:'Team/org features',impact:'Deployable across analyst and quant teams'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Moderate Finance Impact — Primarily for Quant and FinTech Teams',
+      impacts:[
+        'Quant analysts: build and debug trading strategies autonomously',
+        'FinTech firms: automate codebase maintenance and refactoring',
+        'Risk model code review and automated test generation',
+        '$1B ARR signal: Goldman Sachs, JPMorgan and hedge funds are significant adopters',
+      ],
+      automation:'Claude Code can autonomously write, test, and commit Python quantitative analysis scripts — reducing time from model idea to backtested code from days to hours.',
+    },
+    socialPosts:[
+      {platform:'X',handle:'@AnthropicAI',url:'https://x.com/AnthropicAI/status/1925591519882555814',
+        excerpt:"Claude Code is now generally available. We're bringing Claude to more of your development workflow — in the terminal, your favorite IDEs, and running in the background with the Claude Code SDK.",
+        engagement:{views:'132.7K',likes:'820',reposts:'76'},financeSignal:false},
+      {platform:'X',handle:'@selinazwang',url:'https://x.com/selinazwang/status/1995975322953810055',
+        excerpt:"Claude Code went from $0 to $1B of ARR in ~6 month's time. 2025 has clearly been the year of coding AI, and Claude Code takes the cake for fastest product to $1B.",
+        engagement:{views:'—',likes:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'Claude Code Docs',url:'https://docs.anthropic.com/en/docs/claude-code'},
+      {label:'GitHub',url:'https://github.com/anthropics/claude-code'},
+    ]
+  },
+  {
+    id:'o1-pro-openai',company:'openai',type:'model',
+    title:'OpenAI o1-pro API — $150/$600 per M Tokens, 10x Compute',
+    date:'2025-03-19',financeImpact:true,financeImpactLevel:'medium',
+    summary:'OpenAI makes o1-pro available via API with 10x compute budget vs o1. Priced at $150/$600/M tokens — clearly institutional-grade. Best-in-class math reasoning for complex derivatives, risk model validation, and structured credit analysis.',
+    whatsNew:[
+      'o1-pro API access — previously ChatGPT Pro subscribers only',
+      '10x compute budget versus standard o1',
+      'Supports vision, function calling, Structured Outputs',
+      'Responses API integration for agentic orchestration',
+      'Available on API tiers 1–5',
+      '542.8K views on launch post, 1,400 likes',
+    ],
+    vsLastVersion:{
+      title:'o1 → o1-pro',
+      rows:[
+        {category:'Compute Budget',before:'Standard thinking budget',after:'10x compute budget',impact:'Handles genuinely hard problems reliably every time'},
+        {category:'Mathematical Reasoning',before:'Excellent',after:'State-of-the-art',impact:'Complex derivatives and risk calculations without errors'},
+        {category:'Structured Outputs',before:'Limited',after:'Full support',impact:'Reliable JSON for financial data pipelines'},
+        {category:'Agentic',before:'Basic',after:'Responses API integration',impact:'Orchestrate multi-step financial research agents'},
+        {category:'Pricing',before:'Moderate',after:'$150/$600 per M tokens',impact:'Reserve for highest-value analysis — strong institutional ROI'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Medium-High — Institutional-Grade Quantitative Reasoning',
+      impacts:[
+        'Best model for complex derivatives pricing (Black-Scholes variants, exotics)',
+        'Strong for structured credit and CDO tranching analysis',
+        'Option strategy optimization and Greeks computation',
+        'Risk model validation and stress testing scenarios',
+        'Premium pricing ($150/$600/M) signals institutional ROI positioning',
+      ],
+      automation:'o1-pro can verify complex financial math that other models hallucinate on — making it valuable as a verification layer in quantitative workflows where errors have material consequences.',
+    },
+    socialPosts:[
+      {platform:'X',handle:'@OpenAIDevs',url:'https://x.com/OpenAIDevs/status/1902485690958450871',
+        excerpt:'o1-pro now available in API. It uses more compute than o1 to provide consistently better responses. Pricing: $150 / 1M input tokens and $600 / 1M output tokens.',
+        engagement:{views:'542.8K',likes:'1,400',reposts:'149',replies:'410',bookmarks:'295'},financeSignal:true},
+    ],
+    sources:[
+      {label:'@OpenAIDevs on X',url:'https://x.com/OpenAIDevs/status/1902485690958450871'},
+      {label:'OpenAI Platform',url:'https://platform.openai.com/docs/models'},
+    ]
+  },
+  {
+    id:'gpt4o-launch',company:'openai',type:'model',
+    title:'GPT-4o — Real-Time Audio + Vision + Text (Multimodal)',
+    date:'2024-05-13',financeImpact:true,financeImpactLevel:'medium',
+    summary:'OpenAI releases GPT-4o combining real-time audio, vision, and text in one model. Enables financial chart reading, earnings call audio analysis, and voice-driven research queries. One of OpenAI\'s highest-engagement posts ever.',
+    whatsNew:[
+      'Real-time audio, vision, and text in one unified model',
+      'Live chart and table reading from images and PDFs',
+      'Voice mode for natural financial Q&A',
+      'Enhanced file handling for 10-Ks and earnings transcripts',
+      'Faster and cheaper than GPT-4 Turbo',
+    ],
+    vsLastVersion:{
+      title:'GPT-4 Turbo → GPT-4o',
+      rows:[
+        {category:'Modality',before:'Text only (vision limited)',after:'Audio + Vision + Text (native)',impact:'Direct chart, table, and earnings audio analysis'},
+        {category:'Speed',before:'Moderate',after:'Significantly faster',impact:'Better for real-time interactive research tools'},
+        {category:'Voice',before:'TTS add-on only',after:'Native voice reasoning',impact:'Voice-driven financial Q&A possible'},
+        {category:'Cost',before:'Higher',after:'Lower per token',impact:'Economic for high-volume document processing'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Medium Finance Impact — Strong for Multimodal Document Analysis',
+      impacts:[
+        'Read charts, graphs, and tables directly from scanned PDF financial documents',
+        'Earnings call audio transcription and live Q&A',
+        'Voice-driven research: ask financial questions via voice, get structured answers',
+        'Enhanced file handling: upload 10-Ks and get immediate structured analysis',
+      ],
+      automation:"GPT-4o's audio + vision opens legacy document digitization and live earnings call analysis — valuable for firms with large archives of non-machine-readable PDFs and audio recordings.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@OpenAI',url:'https://x.com/OpenAI/status/1790072174117613963',
+        excerpt:'Say hello to GPT-4o, our new flagship model which can reason across audio, vision, and text in real time. Text and image input rolling out today in API and ChatGPT.',
+        engagement:{views:'—',likes:'>50K (est.)'},financeSignal:false},
+    ],
+    sources:[
+      {label:'OpenAI Blog',url:'https://openai.com/blog/hello-gpt-4o'},
+      {label:'OpenAI Models',url:'https://platform.openai.com/docs/models'},
+    ]
+  },
+  {
+    id:'openai-operator',company:'openai',type:'feature',
+    title:'OpenAI Operator — Autonomous Web Agent (Enterprise GA)',
+    date:'2025-08-15',financeImpact:true,financeImpactLevel:'medium',
+    summary:"OpenAI's Operator agent can browse the web, fill forms, and complete multi-step tasks autonomously. Enterprise GA expands to financial research automation including SEC EDGAR navigation, overnight data collection, and competitive intelligence workflows.",
+    whatsNew:[
+      'Enterprise general availability',
+      'Form filling and autonomous web navigation at scale',
+      'SEC EDGAR document retrieval automation',
+      'Improved error recovery and audit trail of actions',
+    ],
+    vsLastVersion:null,
+    financeImpact_detail:{
+      headline:'Medium Finance Impact — Automated Web-Based Research',
+      impacts:[
+        'Automates web-based financial data collection from public sources',
+        'Navigates SEC EDGAR for 10-K/10-Q downloads autonomously',
+        'Competitor price and product monitoring across websites',
+        'Regulatory filing retrieval, organization, and initial tagging',
+      ],
+      automation:'Operator can run overnight to collect and organize public financial data, SEC filings, and news — so analysts start the day with pre-aggregated, pre-sorted research materials.',
+    },
+    socialPosts:[
+      {platform:'X',handle:'@OpenAI',url:'https://x.com/OpenAI',
+        excerpt:'OpenAI Operator — autonomous agent for web tasks now available to enterprise users.',
+        engagement:{views:'—',likes:'—'},financeSignal:false},
+    ],
+    sources:[{label:'OpenAI Blog',url:'https://openai.com/blog/operator'}]
+  },
+  {
+    id:'gemini-2-0-flash',company:'gemini',type:'model',
+    title:'Gemini 2.0 Flash GA — 2× Faster, Audio Input, 1M Context',
+    date:'2025-02-05',financeImpact:false,financeImpactLevel:'low',
+    summary:'Gemini 2.0 Flash reaches GA — 2× faster than 1.5 Flash with native audio input, 1M token context, and a free tier. Strong for high-volume financial document processing and earnings call transcription at very low cost.',
+    whatsNew:[
+      '2× faster than Gemini 1.5 Flash',
+      'Native audio input for earnings call analysis',
+      '1M token context window',
+      'Free tier for developers',
+      'Flash-Lite variant for ultra-low-cost batch screening',
+    ],
+    vsLastVersion:{
+      title:'Gemini 1.5 Flash → 2.0 Flash',
+      rows:[
+        {category:'Speed',before:'Fast',after:'2× faster',impact:'Better for real-time applications'},
+        {category:'Audio Input',before:'Not available',after:'Native support',impact:'Earnings call audio analysis at scale'},
+        {category:'Cost',before:'Competitive',after:'Flash-Lite: ultra-low',impact:'Economic for high-volume batch tasks'},
+        {category:'Context',before:'1M tokens',after:'1M tokens (improved recall)',impact:'Full annual reports with better information retrieval'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Low-Medium Finance Impact — Best for High-Volume Batch Processing',
+      impacts:[
+        'Cost-effective for processing thousands of news articles for sentiment analysis',
+        'Audio support enables earnings call transcription at scale',
+        '1M token context handles large fund prospectuses in one shot',
+        'Google BigQuery integration for large-scale financial datasets',
+      ],
+      automation:'Gemini 2.0 Flash enables automated earnings call transcription and summary at scale — processing hundreds of calls per quarter at very low cost per document.',
+    },
+    socialPosts:[
+      {platform:'X',handle:'@GoogleDeepMind',url:'https://x.com/GoogleDeepMind/status/1866869343570608557',
+        excerpt:"Welcome to the world, Gemini 2.0. Our most capable AI model yet. Better performance, new multimodal output, Google tool use — and paves the way for new agentic experiences.",
+        engagement:{views:'—',likes:'—'},financeSignal:false},
+      {platform:'X',handle:'@JeffDean (Google Chief Scientist)',url:'https://x.com/JeffDean/status/1887194456287547642',
+        excerpt:'Gemini 2.0 Flash is now GA. We also have experimental Gemini 2.0 Pro and a new Flash-Lite model — the full 2.0 family is now available.',
+        engagement:{views:'—',likes:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'Google AI Blog',url:'https://blog.google/technology/google-deepmind/google-gemini-ai'},
+      {label:'Google AI Studio',url:'https://aistudio.google.com'},
+    ]
+  },
+  {
+    id:'gemini-2-0-pro',company:'gemini',type:'model',
+    title:'Gemini 2.0 Pro — Native Google Search + Code Execution + 2M Context',
+    date:'2025-02-05',financeImpact:true,financeImpactLevel:'medium',
+    summary:"Google's flagship model with deeply integrated Google Search grounding (real-time data), Python code execution, native Google Workspace AI, and 2M token experimental context. Best choice for Google-ecosystem finance teams.",
+    whatsNew:[
+      'Google Search grounding built-in — real-time data in every response',
+      'Python code execution for inline financial calculations',
+      'Deep Google Workspace AI: Sheets, Docs, Drive',
+      'BigQuery integration for large financial datasets',
+      '2M token context (experimental)',
+      'Improved mathematical reasoning',
+    ],
+    vsLastVersion:{
+      title:'Gemini 1.5 Pro → 2.0 Pro',
+      rows:[
+        {category:'Search Grounding',before:'Optional add-on',after:'Native, deeply integrated',impact:'Real-time market and news data in every analysis response'},
+        {category:'Code Execution',before:'Limited',after:'Full Python execution',impact:'Run DCF calculations and scenario models inline'},
+        {category:'Google Workspace',before:'Basic integration',after:'Deep AI integration',impact:'AI directly in Sheets, Docs, Drive for finance teams'},
+        {category:'Context Window',before:'1M tokens',after:'2M tokens (experimental)',impact:'Multiple annual reports and history in one session'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Medium Impact — Premier Choice for Google Workspace Finance Teams',
+      impacts:[
+        'Built-in Google Search grounding: real-time market context in every analysis',
+        'Native Google Sheets AI: build financial models with natural language prompts',
+        'Python code execution: inline DCF calculations without leaving the chat',
+        'BigQuery integration: query large financial datasets with natural language',
+      ],
+      automation:'For firms on Google Workspace, Gemini 2.0 Pro enables automated financial models in Sheets, AI-assisted pitch decks, and real-time news integration — all within the Google ecosystem.',
+    },
+    socialPosts:[
+      {platform:'X',handle:'@GoogleDeepMind',url:'https://x.com/GoogleDeepMind/status/1866869343570608557',
+        excerpt:'Gemini 2.0 brings new multimodal output, Google tool use built-in, and paves the way for agentic experiences across Search, Workspace, and developer APIs.',
+        engagement:{views:'—',likes:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'Google Blog',url:'https://blog.google/technology/google-deepmind'},
+      {label:'Gemini Docs',url:'https://ai.google.dev'},
+    ]
+  },
+  {
+    id:'grok-3',company:'grok',type:'model',
+    title:'Grok 3 — 43M View Launch, Real-Time X Data + Think Mode',
+    date:'2025-02-17',financeImpact:false,financeImpactLevel:'low',
+    summary:"xAI releases Grok 3 with the highest-engagement AI launch post in history (43M views, 36K likes on @xAI). Claims top scores on MATH and AIME benchmarks. Unique advantage: native real-time X/Twitter data for social sentiment trading signals.",
+    whatsNew:[
+      'Top benchmark scores on MATH and AIME (mathematical reasoning)',
+      'Real-time X/Twitter data access — native social sentiment signals',
+      'Think mode — extended multi-step reasoning',
+      'DeepSearch — multi-step autonomous web research',
+      'Largest AI model launch post in history: 43M views, 36K likes',
+    ],
+    vsLastVersion:{
+      title:'Grok 2 → Grok 3',
+      rows:[
+        {category:'Mathematical Reasoning',before:'Good',after:'Excellent (SOTA on MATH)',impact:'Better at complex financial math problems'},
+        {category:'X Data Integration',before:'Real-time tweets',after:'Enhanced native social signals',impact:'Higher-quality sentiment for trading signal generation'},
+        {category:'DeepSearch',before:'Basic web search',after:'Multi-step autonomous research',impact:'Better automated competitive intelligence workflows'},
+        {category:'Think Mode',before:'Not available',after:'Extended reasoning',impact:'More reliable on hard quantitative problems'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Low-Medium Finance Impact — Unique Real-Time Social Sentiment Edge',
+      impacts:[
+        'Only AI model with native real-time X/Twitter data — unique social sentiment signal for trading',
+        'MATH benchmark improvements useful for quantitative problem-solving',
+        'DeepSearch useful for competitive intelligence and market research',
+        'Elon Musk explicitly positioned Grok as challenge to Bloomberg Terminal news functions',
+      ],
+      automation:"Grok 3's native X integration enables automated social sentiment analysis — monitoring trending tickers, executive commentary, and breaking news across X in real time, a capability other models can't match natively.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@xAI',url:'https://x.com/xai/status/1892400129719611567',
+        excerpt:"This is it: The world's smartest AI, Grok 3, now available for free (until our servers melt). X Premium+ and SuperGrok users will have increased access to Grok 3.",
+        engagement:{views:'43M',likes:'36,000',reposts:'4,400',replies:'7,200'},financeSignal:false},
+      {platform:'X',handle:'@elonmusk',url:'https://x.com/elonmusk/status/1890958798841389499',
+        excerpt:'Grok 3 release with live demo on Monday night at 8pm PT. Smartest AI on Earth.',
+        engagement:{views:'>1M (est.)',likes:'>20K (est.)'},financeSignal:false},
+    ],
+    sources:[
+      {label:'@xAI on X',url:'https://x.com/xai/status/1892400129719611567'},
+      {label:'xAI Blog',url:'https://x.ai/blog'},
+    ]
+  },
+
+  // ── ADDITIONAL OPENAI ───────────────────────────────────
+  {
+    id:'openai-o3-mini',company:'openai',type:'model',
+    title:'OpenAI o3-mini — First Production-Ready Small Reasoning Model',
+    date:'2025-01-31',financeImpact:true,financeImpactLevel:'medium',
+    summary:"OpenAI releases o3-mini, the first compact reasoning model with function calling, structured outputs, and adjustable reasoning effort (low/medium/high). Outperforms o1-high on coding benchmarks at a fraction of the cost. Designed for production deployment in STEM-heavy applications including financial modeling and quantitative analysis.",
+    whatsNew:[
+      'First small reasoning model with function calling + structured outputs',
+      'Three reasoning effort levels: low (fast/cheap), medium, high (deep reasoning)',
+      'Highest SWEbench-verified score of any released model at launch',
+      'Replaces o1-mini as the go-to cost-efficient reasoning model',
+      'Available via API and ChatGPT Plus/Pro/Team',
+    ],
+    vsLastVersion:{
+      title:'o1-mini → o3-mini',
+      rows:[
+        {category:'Reasoning Depth',before:'Fixed reasoning effort',after:'Adjustable low/medium/high effort',impact:'Tune cost vs. depth for each financial query type'},
+        {category:'Function Calling',before:'Not supported',after:'Full function calling + structured outputs',impact:'Direct integration into financial data pipelines and tools'},
+        {category:'Coding Benchmark',before:'Strong',after:'SOTA on SWEbench at time of release',impact:'Better automated code generation for quant models and analytics scripts'},
+        {category:'Cost',before:'o1-mini pricing',after:'Lower cost per token',impact:'Cheaper to run at scale for high-frequency research tasks'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Medium Finance Impact — Cost-Efficient Reasoning for Quant & Research Tasks',
+      impacts:[
+        'Adjustable reasoning effort: use "low" for quick screening queries, "high" for complex multi-step financial analysis',
+        'Function calling enables direct connection to financial data APIs (Bloomberg, FactSet) within reasoning chains',
+        'Structured outputs make JSON extraction from earnings reports and filings reliable',
+        'Cost efficiency enables broader deployment across analyst teams vs. full o1',
+      ],
+      automation:"o3-mini's function calling + reasoning combination enables automated financial workflows: pull live data from an API, reason over it, and return structured JSON — all in one model call. Replaces manual multi-step pipelines.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@OpenAI',url:'https://openai.com/index/openai-o3-mini/',
+        excerpt:'Introducing o3-mini — our most capable small reasoning model yet. Adjustable reasoning effort, function calling, structured outputs. Available now in ChatGPT and the API.',
+        engagement:{views:'—',likes:'—',reposts:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'OpenAI — Introducing o3-mini',url:'https://openai.com/index/openai-o3-mini/'},
+      {label:'OpenAI Model Release Notes',url:'https://help.openai.com/en/articles/9624314-model-release-notes'},
+    ]
+  },
+  {
+    id:'openai-o3-o4mini',company:'openai',type:'model',
+    title:'OpenAI o3 + o4-mini — Multimodal Reasoning with Vision & Web Browsing',
+    date:'2025-04-16',financeImpact:true,financeImpactLevel:'high',
+    summary:"OpenAI releases o3 and o4-mini simultaneously. o3 is OpenAI's most advanced reasoning model — first in the series with native web browsing, image generation, and visual understanding built into reasoning. o4-mini is a faster, cheaper companion with strong reasoning at low cost. Both support tool use within reasoning chains. Available to ChatGPT Plus/Pro/Team and API.",
+    whatsNew:[
+      'o3: first reasoning model with native web browsing + image generation',
+      'o3: multimodal vision understanding built into reasoning chains',
+      'o4-mini: cost-efficient reasoning, available to all ChatGPT tiers including free',
+      'Both support full tool use and function calling within reasoning',
+      'o3-pro followed Jun 10, 2025 — highest-capability reasoning model for Pro subscribers',
+    ],
+    vsLastVersion:{
+      title:'o3-mini → o3 + o4-mini',
+      rows:[
+        {category:'Vision',before:'Text only',after:'Native image understanding in reasoning',impact:'Analyze charts, financial documents, and visual data within a reasoning chain'},
+        {category:'Web Browsing',before:'Not available',after:'Native real-time web access',impact:'Pull live market data and news within a reasoning step'},
+        {category:'Model Tier',before:'Single model',after:'o3 (powerful) + o4-mini (fast/cheap)',impact:'Match model to task cost requirements across analyst workflows'},
+        {category:'Tool Use',before:'Function calling only',after:'Full tool use within reasoning chains',impact:'Richer financial workflow automation end-to-end'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'High Finance Impact — First Reasoning Model with Vision + Live Web Access',
+      impacts:[
+        'Analyze earnings slide decks and financial charts directly within o3\'s reasoning chain — no OCR pre-processing',
+        'Browse SEC EDGAR filings in real-time during reasoning — no document pre-loading needed',
+        'o4-mini enables cost-effective screening of large filing sets with strong reasoning quality',
+        'o3-pro (Jun 10, 2025): highest-capability model for complex sell-side research tasks',
+        'Native vision: parse tables and charts from PDFs natively within reasoning',
+      ],
+      automation:"o3's native web + vision combo enables fully autonomous research: browse a company's IR page, read the latest 10-Q, analyze embedded charts, and produce a structured summary — all in one inference call with no external tooling required.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@OpenAI',url:'https://openai.com/index/introducing-o3-and-o4-mini/',
+        excerpt:'Introducing o3 and o4-mini. o3 is our most capable model yet — with vision, web browsing, and image generation built into its reasoning. o4-mini brings strong reasoning at lower cost. Available now.',
+        engagement:{views:'—',likes:'—',reposts:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'OpenAI — Introducing o3 and o4-mini',url:'https://openai.com/index/introducing-o3-and-o4-mini/'},
+      {label:'Axios — OpenAI rolls out o3 and o4-mini',url:'https://www.axios.com/2025/04/16/openai-o3-o4-mini-advanced-ai-tools'},
+    ]
+  },
+  {
+    id:'openai-gpt5',company:'openai',type:'model',
+    title:'GPT-5 — OpenAI Flagship: 400K Context, 45% Fewer Hallucinations',
+    date:'2025-08-07',financeImpact:true,financeImpactLevel:'high',
+    summary:"OpenAI launches GPT-5, its most capable flagship model. 400K token context window, 45% fewer hallucinations vs GPT-4o, state-of-the-art across coding, math, writing, and visual perception. Available via ChatGPT and API on day one. Becomes the primary model for high-stakes professional use, and the long-context engine powering Perplexity Computer.",
+    whatsNew:[
+      '400K token context — reads full annual reports, 10-Ks, and lengthy filings in one call',
+      '45% fewer hallucinations vs GPT-4o — critical for compliance-sensitive financial use',
+      'SOTA across coding, math, writing, and visual perception benchmarks',
+      'Available in ChatGPT (free, Plus, Pro) and API on launch day',
+      'Unified multimodal: vision, audio, and structured data in one model',
+      'Serves as long-context engine in Perplexity Computer multi-agent system',
+    ],
+    vsLastVersion:{
+      title:'GPT-4o → GPT-5',
+      rows:[
+        {category:'Context Window',before:'128K tokens',after:'400K tokens',impact:'Read entire 10-K filings, earnings call transcripts, and loan documents without chunking'},
+        {category:'Hallucination Rate',before:'Baseline',after:'45% fewer hallucinations',impact:'Higher accuracy for financial data extraction and compliance use cases'},
+        {category:'Reasoning',before:'Good',after:'SOTA on math and coding benchmarks',impact:'More reliable on complex multi-step financial models and valuations'},
+        {category:'Multimodal',before:'Vision + audio (separate)',after:'Unified multimodal in one call',impact:'Analyze mixed financial documents (charts + text + tables) natively'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'High Finance Impact — 400K Context + Lower Hallucinations = Analyst-Grade Reliability',
+      impacts:[
+        '400K context: load a full 10-K, proxy statement, and earnings transcript in a single call for holistic analysis',
+        '45% fewer hallucinations: meaningfully reduces risk of AI-fabricated financial figures in reports',
+        'SOTA math performance: more reliable for complex DCF, LBO, and derivatives calculations',
+        'Deployed by Perplexity Computer as the long-context reasoning engine for multi-hour research tasks',
+        'Enterprise compliance teams adopting GPT-5 for contract review and regulatory filing analysis',
+      ],
+      automation:"GPT-5's 400K context eliminates the document-chunking workflow analysts previously used for large filings. A single prompt can now ingest, cross-reference, and summarize an entire SEC filing package — 10-K, proxy, and earnings call — in one pass.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@OpenAI',url:'https://openai.com/index/introducing-gpt-5/',
+        excerpt:'GPT-5 is here. Our most capable model yet — 400K context, dramatically fewer hallucinations, state-of-the-art across every major benchmark. Available now in ChatGPT and the API.',
+        engagement:{views:'—',likes:'—',reposts:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'OpenAI — Introducing GPT-5',url:'https://openai.com/index/introducing-gpt-5/'},
+      {label:'TechCrunch — GPT-5 is here',url:'https://techcrunch.com/2025/08/07/openais-gpt-5-is-here/'},
+    ]
+  },
+
+  // ── ADDITIONAL ANTHROPIC ─────────────────────────────────
+  {
+    id:'claude-3-7-sonnet',company:'anthropic',type:'model',
+    title:'Claude 3.7 Sonnet — First Hybrid Reasoning Model, 128K Output Tokens',
+    date:'2025-02-24',financeImpact:true,financeImpactLevel:'high',
+    summary:"Anthropic releases Claude 3.7 Sonnet — the industry's first hybrid reasoning model. Toggle extended thinking on or off per request. At release: best-in-class on coding benchmarks (SWEbench), 128K output tokens (up from 8K), and same pricing as Claude 3.5 Sonnet. Reasoning traces are visible and auditable — a critical feature for compliance-sensitive financial use.",
+    whatsNew:[
+      'First hybrid reasoning model — toggle extended thinking per request',
+      '128K output tokens (up from 8K) — generate full reports in one call',
+      'SOTA on SWEbench coding benchmark at release',
+      'Same API pricing as Claude 3.5 Sonnet',
+      'Extended thinking shows reasoning traces — fully auditable',
+      'Foundation for Claude Code (agentic coding capabilities)',
+    ],
+    vsLastVersion:{
+      title:'Claude 3.5 Sonnet → Claude 3.7 Sonnet',
+      rows:[
+        {category:'Reasoning Mode',before:'Standard inference only',after:'Toggle extended thinking on/off',impact:'Use fast mode for simple queries, deep reasoning for complex financial analysis'},
+        {category:'Output Length',before:'8K tokens max',after:'128K tokens max',impact:'Generate full investment memos, earnings summaries, and long-form models in one call'},
+        {category:'Coding',before:'Strong',after:'SOTA on SWEbench at release',impact:'More reliable code generation for quantitative models and data pipelines'},
+        {category:'Reasoning Transparency',before:'No visibility',after:'Extended thinking traces visible',impact:'Auditable reasoning — critical for compliance-sensitive financial applications'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'High Finance Impact — Hybrid Reasoning + 128K Output Transforms Analyst Deliverables',
+      impacts:[
+        'Toggle extended thinking for difficult valuation problems — see step-by-step reasoning before accepting the answer',
+        '128K output: generate a complete equity research note in a single call — intro, model, risks, recommendation',
+        'Auditable thinking traces: show compliance teams exactly how the AI reached its conclusion',
+        'Hybrid mode: fast (no thinking) for screening workflows, deep thinking for M&A due diligence',
+        'SOTA coding enables more reliable programmatic financial model generation',
+      ],
+      automation:"Claude 3.7's 128K output + extended thinking enables a single prompt to plan, reason through, and fully draft an initiating coverage report — previously requiring multiple model calls and manual assembly. Analysts review a complete AI-drafted note rather than stitching together fragments.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@AnthropicAI',url:'https://www.anthropic.com/news/claude-3-7-sonnet',
+        excerpt:'Introducing Claude 3.7 Sonnet — our most intelligent model, and the first hybrid reasoning model on the market. Toggle extended thinking on or off. 128K output tokens. Same price as 3.5 Sonnet.',
+        engagement:{views:'—',likes:'—',reposts:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'Anthropic — Claude 3.7 Sonnet',url:'https://www.anthropic.com/news/claude-3-7-sonnet'},
+      {label:'LLM Stats — Claude 3.7 Sonnet',url:'https://llm-stats.com/models/claude-3-7-sonnet-20250219'},
+    ]
+  },
+
+  // ── ADDITIONAL GOOGLE ─────────────────────────────────────
+  {
+    id:'gemini-2-5-pro',company:'gemini',type:'model',
+    title:'Gemini 2.5 Pro — Google\'s First Reasoning Model, 1M Token Context',
+    date:'2025-03-25',financeImpact:true,financeImpactLevel:'high',
+    summary:"Google releases Gemini 2.5 Pro Experimental — their first reasoning model with a built-in thinking mode and a 1M token context window (2M coming). State-of-the-art across coding, math, and reasoning benchmarks at release. Available in Google AI Studio and for Gemini Advanced subscribers. Marks Google's full entry into the extended-reasoning model category.",
+    whatsNew:[
+      'Built-in thinking mode — step-by-step reasoning with visible thought traces',
+      '1M token context window (2M token version announced)',
+      'SOTA on coding, math, and reasoning benchmarks at release',
+      'Native multimodal: text, image, audio, video, and code',
+      'Available in Google AI Studio for developers from day one',
+      'Gemini Advanced users can select in model dropdown on desktop and mobile',
+    ],
+    vsLastVersion:{
+      title:'Gemini 2.0 Pro → Gemini 2.5 Pro',
+      rows:[
+        {category:'Reasoning',before:'Standard inference',after:'Built-in thinking mode with visible traces',impact:'Deeper reasoning for multi-step financial analysis and valuation work'},
+        {category:'Context Window',before:'2M tokens (2.0 Pro)',after:'1M tokens (2M announced)',impact:'Ingest massive financial datasets, entire SEC filing histories in one call'},
+        {category:'Benchmark Performance',before:'Strong',after:'SOTA at release across coding/math/reasoning',impact:'Most accurate Google model yet for quantitative financial tasks'},
+        {category:'Developer Access',before:'API + Gemini Advanced',after:'Google AI Studio + Gemini Advanced',impact:'More accessible to developers building financial applications on Google stack'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'High Finance Impact — Reasoning + 1M Context Enables Deep Financial Research',
+      impacts:[
+        'Thinking mode for financial analysis: see how the model reasons through a complex valuation before final output',
+        '1M context: ingest 10 years of earnings transcripts simultaneously for longitudinal trend analysis',
+        'SOTA math performance: more reliable for complex derivatives pricing and quant research',
+        'Tight Google Workspace integration — reasoning model available natively in Sheets and Docs',
+        'Multimodal: analyze financial charts, satellite imagery for real-asset research, and audio earnings calls',
+      ],
+      automation:"Gemini 2.5 Pro's 1M context enables ingesting an entire company's public filing history in one call — 10 years of 10-Ks, proxies, and earnings transcripts — and asking holistic longitudinal questions that no previous model could handle without chunking.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@GoogleDeepMind',url:'https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/',
+        excerpt:'Gemini 2.5 Pro is our most intelligent model yet. It comes with thinking built in — our first reasoning model. 1M token context. Available now in Google AI Studio.',
+        engagement:{views:'—',likes:'—',reposts:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'Google Blog — Gemini 2.5 Thinking Updates',url:'https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/'},
+      {label:'InfoQ — Gemini 2.5 Pro',url:'https://www.infoq.com/news/2025/03/gemini-2-5-pro/'},
+    ]
+  },
+
+  // ── ADDITIONAL GROK ───────────────────────────────────────
+  {
+    id:'grok-4',company:'grok',type:'model',
+    title:'Grok 4 + Grok 4 Heavy — Multi-Agent Parallel Reasoning, SuperGrok Heavy',
+    date:'2025-07-09',financeImpact:true,financeImpactLevel:'medium',
+    summary:"xAI releases Grok 4 and Grok 4 Heavy on July 9, 2025, claiming top scores across frontier model benchmarks. Grok 4 Heavy runs multiple agents in parallel for deeper reasoning. Accompanied by the new SuperGrok Heavy subscription tier. Continues native real-time X/Twitter data access. Positioned as a direct challenger to GPT-5 and Claude Opus 4.",
+    whatsNew:[
+      'Grok 4 Heavy: multi-agent parallel reasoning for complex tasks',
+      'Top benchmark scores claimed across math, coding, and reasoning',
+      'SuperGrok Heavy plan: new premium tier with priority Grok 4 Heavy access',
+      'Native real-time X/Twitter social data integration continues',
+      'Available via x.ai API and xAI platform',
+    ],
+    vsLastVersion:{
+      title:'Grok 3 → Grok 4',
+      rows:[
+        {category:'Architecture',before:'Single model inference',after:'Grok 4 + Grok 4 Heavy (multi-agent parallel)',impact:'Grok 4 Heavy handles more complex multi-step financial reasoning tasks'},
+        {category:'Benchmark Performance',before:'SOTA on MATH/AIME',after:'Broader benchmark leadership claimed',impact:'More reliable across a wider range of quantitative task types'},
+        {category:'Subscription Tier',before:'SuperGrok',after:'SuperGrok Heavy (new premium)',impact:'Enterprise pricing now available for priority access'},
+        {category:'X Data Access',before:'Real-time tweets',after:'Enhanced native X data pipeline',impact:'Better social sentiment signals for market research and trading'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Medium Finance Impact — Multi-Agent Reasoning + Unique Real-Time X Sentiment',
+      impacts:[
+        'Grok 4 Heavy runs parallel agents — useful for multi-source financial research tasks',
+        'Retains unique real-time X/Twitter data advantage for social sentiment trading signals',
+        'Elon Musk network effects: fastest breaking corporate and market news via X',
+        'SuperGrok Heavy enterprise tier makes Grok accessible for institutional deployments',
+        'Parallel agents: one scrapes X sentiment while another models the financials simultaneously',
+      ],
+      automation:"Grok 4 Heavy's parallel agent architecture enables simultaneous multi-source research: one agent monitors X for ticker sentiment, another analyzes financials, a third drafts the summary — all coordinated in one request. Unique X data access remains Grok's key differentiated capability.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@xAI',url:'https://x.ai/news/grok-4',
+        excerpt:'Grok 4 is here. Our most powerful model yet — outperforming all frontier models on key benchmarks. Grok 4 Heavy runs multiple agents in parallel for the deepest reasoning available.',
+        engagement:{views:'—',likes:'—',reposts:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'xAI — Grok 4',url:'https://x.ai/news/grok-4'},
+      {label:'American Bazaar — Grok 4 + SuperGrok Heavy',url:'https://americanbazaaronline.com/2025/07/10/xai-launches-grok-4-and-supergrok-heavy-plan-464901/'},
+    ]
+  },
+
+  // ── PERPLEXITY ──────────────────────────────────────────
+  {
+    id:'perplexity-computer',company:'perplexity',type:'feature',
+    title:'Perplexity Computer — Super Agent Orchestrating 19 AI Models',
+    date:'2026-02-25',financeImpact:true,financeImpactLevel:'high',
+    summary:"Perplexity launches 'Computer' — a long-running multi-agent system that breaks complex goals into subtasks and routes them across 19 frontier models (Claude Opus 4.6 for reasoning, Gemini for deep research, Grok for speed, GPT-5 for long-context). Creates websites, writes reports, generates datasets, deploys code, and manages projects end-to-end. Runs in an isolated sandbox. Available to Max subscribers ($200/mo).",
+    whatsNew:[
+      'Orchestrates 19 frontier AI models — routes each subtask to the best model',
+      'Claude Opus 4.6 as core reasoning & coding engine',
+      'Isolated sandbox execution — prevents runaway agents from affecting live systems',
+      'End-to-end project management: research → design → code → deploy',
+      'User-defined spending caps and model selection per sub-agent',
+      '10,000 credits/month for Max subscribers (20,000 bonus at launch)',
+      'Available now on Max ($200/mo); Pro & Enterprise coming soon',
+    ],
+    vsLastVersion:{
+      title:'Perplexity Search → Computer Agent',
+      rows:[
+        {category:'Task Scope',before:'Single-turn Q&A / search',after:'Multi-step autonomous projects (hours or months)',impact:'Handles end-to-end analyst workflows without human babysitting'},
+        {category:'Model Routing',before:'One model per query',after:'19-model orchestration per goal',impact:'Best model for each subtask — reasoning, vision, video, search'},
+        {category:'Output Type',before:'Text answers + citations',after:'Working code, reports, datasets, deployed sites',impact:'Delivers deliverables, not just information'},
+        {category:'Safety',before:'Standard guardrails',after:'Isolated sandbox + spending caps',impact:'Safer for enterprise and regulated-industry deployment'},
+        {category:'Context',before:'Single session',after:'Long-running (days to months)',impact:'Sustains complex multi-phase research projects'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'🔥 High Finance Impact — Autonomous Multi-Model Research & Delivery Agent',
+      impacts:[
+        'Run overnight: "Build a full comp table for the S&P 500 tech sector with margins, EV/EBITDA, and consensus estimates" — wake up to a formatted Excel deliverable',
+        'Automates end-to-end initiation of coverage workflows: research → model → memo → deck',
+        'Multi-model routing means best AI for each step: Opus 4.6 for financial reasoning, Gemini for real-time data, GPT-5 for long earnings transcripts',
+        'Sandbox isolation makes it safer for compliance-sensitive financial workflows',
+        'Portfolio monitoring: schedule recurring research tasks on specific tickers or sectors',
+      ],
+      automation:"Computer eliminates the need for analysts to manually orchestrate multiple AI tools. A single prompt — 'Research NVDA ahead of earnings, build a bear/bull model, and draft a 2-page note' — runs for hours and delivers the full package. This compresses a full analyst day into a single supervised agent run.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@AravindSrinivas',url:'https://x.com/AravindSrinivas',
+        excerpt:"We've silently been working on the next big thing: Perplexity Computer. Describe the end product you want. Computer breaks it down and routes tasks across 19 frontier models.",
+        engagement:{views:'—',likes:'—',reposts:'—'},financeSignal:false},
+      {platform:'X',handle:'@perplexity_ai',url:'https://x.com/perplexity_ai',
+        excerpt:'Introducing Perplexity Computer — research, design, code, deploy. All in one system. Available now for Max subscribers.',
+        engagement:{views:'—',likes:'—',reposts:'—'},financeSignal:false},
+    ],
+    sources:[
+      {label:'Semafor — Launch Article',url:'https://www.semafor.com/article/02/25/2026/perplexity-launches-computer-super-agent'},
+      {label:'The Decoder — Deep Dive',url:'https://the-decoder.com/perplexity-computer-bundles-rival-ai-models-into-one-agentic-workflow-system-for-200-a-month/'},
+      {label:'BusinessToday — CEO Announcement',url:'https://www.businesstoday.in/technology/story/aravind-srinivas-unveils-perplexity-computer-an-ai-system-that-runs-projects-end-to-end-518013-2026-02-26'},
+      {label:'Perplexity Release Notes',url:'https://releasebot.io/updates/perplexity-ai'},
+    ]
+  },
+  {
+    id:'perplexity-model-council',company:'perplexity',type:'feature',
+    title:'Perplexity Model Council — Run One Query Across 3 AI Models Simultaneously',
+    date:'2026-02-05',financeImpact:true,financeImpactLevel:'medium',
+    summary:"Perplexity launches Model Council: runs any query simultaneously through three frontier models (e.g. Claude Opus 4.6, GPT-5.2, Gemini 3.0), then a synthesizer resolves conflicts and surfaces where models agree vs. diverge. Designed to eliminate model-choice bias and improve trust in high-stakes decisions. Available on Max ($200/mo) via web.",
+    whatsNew:[
+      'Runs same query across 3 frontier models simultaneously',
+      'Synthesizer model merges outputs and flags disagreements',
+      'Shows exactly where models agree and where they conflict',
+      'Eliminates "which model do I trust?" decision fatigue',
+      'Available on Max plan (web); mobile coming soon',
+      'Deep Research upgraded to Claude Opus 4.6 (81.9% benchmark)',
+    ],
+    vsLastVersion:{
+      title:'Single-model query → Model Council',
+      rows:[
+        {category:'Model Coverage',before:'One model chosen manually',after:'Three frontier models run in parallel',impact:'No single-model blind spots on complex research questions'},
+        {category:'Conflict Visibility',before:'One answer, no alternatives',after:'Side-by-side output with conflict flags',impact:'Analysts see where models disagree — critical for contrarian research'},
+        {category:'Confidence Signal',before:'No calibration',after:'Synthesizer scores model agreement',impact:'Higher-confidence answers for investment decisions'},
+        {category:'Deep Research Engine',before:'Previous model',after:'Claude Opus 4.6 (81.9% benchmark)',impact:'Significantly more accurate multi-step financial research'},
+      ]
+    },
+    financeImpact_detail:{
+      headline:'Medium Finance Impact — Multi-Model Consensus for High-Stakes Research',
+      impacts:[
+        '"Should we be long or short TSLA into earnings?" — run Model Council to see if Claude, GPT, and Gemini agree or diverge',
+        'Investment thesis stress-testing: get three AI perspectives before committing to a call',
+        'Risk assessment: model disagreement is itself a signal — if 3 models conflict, the situation is genuinely ambiguous',
+        'Deep Research on Opus 4.6 (81.9% benchmark) dramatically improves multi-step financial analysis quality',
+        'Reduces AI confirmation bias risk for analysts who always use the same model',
+      ],
+      automation:"Model Council lets analysts run one research prompt and get three calibrated perspectives simultaneously, replacing the manual workflow of copy-pasting the same question into Claude, ChatGPT, and Gemini. The synthesizer layer surfaces exactly where the models diverge — a signal in itself for high-uncertainty situations.",
+    },
+    socialPosts:[
+      {platform:'X',handle:'@perplexity_ai',url:'https://x.com/perplexity_ai',
+        excerpt:'Introducing Model Council — run your query across Claude Opus 4.6, GPT-5.2, and Gemini 3.0 simultaneously. See where they agree. See where they don\'t. Now on Perplexity Max.',
+        engagement:{views:'—',likes:'—',reposts:'—'},financeSignal:true},
+    ],
+    sources:[
+      {label:'Perplexity Blog — Introducing Model Council',url:'https://www.perplexity.ai/hub/blog/introducing-model-council'},
+      {label:'Analytics Insight',url:'https://www.analyticsinsight.net/news/perplexity-rolls-out-model-council-to-compare-ai-answers-and-improve-trust'},
+      {label:'Perplexity Changelog Feb 6',url:'https://www.perplexity.ai/changelog/what-we-shipped---february-6th-2026'},
+      {label:'CIOL — Model Choice Problem',url:'https://www.ciol.com/tech-buzz/perplexitys-model-council-aims-to-fix-the-model-choice-problem-11097287'},
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const state = {
+  filter: 'all',
+  typeFilter: null,
+  currentView: 'log',
+  sort: 'date-desc',
+  filtered: [],
+  expandedIds: new Set(),
+  alertsShown: new Set(),
+  pendingUpdate: false,
+  lastRefresh: Date.now(),
+};
+
+// ═══════════════════════════════════════════════════════════
+// UTIL
+// ═══════════════════════════════════════════════════════════
+function esc(s){
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function coColor(c){ return {anthropic:'var(--anthropic)',openai:'var(--openai)',gemini:'var(--gemini)',grok:'var(--grok)',perplexity:'var(--perplexity)'}[c]||'var(--muted)'; }
+function coLabel(c){ return {anthropic:'Anthropic',openai:'OpenAI',gemini:'Google Gemini',grok:'xAI / Grok',perplexity:'Perplexity'}[c]||c; }
+function typeLabel(t){ return {model:'Model Release',update:'Model Update',partnership:'Partnership',api:'API / Platform',feature:'Feature',research:'Research'}[t]||t; }
+function coInitial(c){ return {anthropic:'A',openai:'O',gemini:'G',grok:'X'}[c]||'?'; }
+function fmtDate(d){ const dt=new Date(d+'T00:00:00'); return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function fmtDateShort(d){ const dt=new Date(d+'T00:00:00'); return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function isNew(d){ return new Date(d+'T00:00:00')>=new Date(Date.now()-7*864e5); }
+
+// ═══════════════════════════════════════════════════════════
+// FILTER + SORT
+// ═══════════════════════════════════════════════════════════
+function setFilter(f){
+  state.filter=f; state.typeFilter=null;
+  document.querySelectorAll('.hchip').forEach(c=>c.classList.toggle('active',c.dataset.filter===f));
+  document.querySelectorAll('.co-row').forEach(r=>r.classList.toggle('active',r.id==='co-'+f));
+  document.querySelectorAll('.type-row').forEach(r=>r.classList.remove('active'));
+  applyFilters();
+}
+function setTypeFilter(t){
+  state.typeFilter=(state.typeFilter===t)?null:t;
+  document.querySelectorAll('.type-row').forEach(r=>r.classList.toggle('active',r.dataset.type===t&&state.typeFilter===t));
+  applyFilters();
+}
+function applySort(){
+  state.sort=document.getElementById('sortSel').value;
+  state.filtered=sortItems(state.filtered);
+  renderLog(); renderTimeline();
+}
+function applyFilters(){
+  let items=[...RELEASES];
+  if(state.filter==='finance') items=items.filter(r=>r.financeImpact);
+  else if(state.filter!=='all') items=items.filter(r=>r.company===state.filter);
+  if(state.typeFilter) items=items.filter(r=>r.type===state.typeFilter);
+  state.filtered=sortItems(items);
+  renderLog(); renderTimeline(); populateCompareSelects();
+  updateLogMeta(); updateSidebar();
+}
+function sortItems(items){
+  const fl={high:3,medium:2,low:1};
+  return [...items].sort((a,b)=>{
+    if(state.sort==='date-desc') return b.date.localeCompare(a.date);
+    if(state.sort==='date-asc')  return a.date.localeCompare(b.date);
+    if(state.sort==='finance'){
+      const fa=a.financeImpact?(fl[a.financeImpactLevel]||1):0;
+      const fb=b.financeImpact?(fl[b.financeImpactLevel]||1):0;
+      return fb-fa||b.date.localeCompare(a.date);
+    }
+    if(state.sort==='company'){
+      const ord={anthropic:0,openai:1,gemini:2,grok:3};
+      return (ord[a.company]??9)-(ord[b.company]??9)||b.date.localeCompare(a.date);
+    }
+    return 0;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════════════════
+function updateSidebar(){
+  const all=RELEASES;
+  const setText=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+  setText('statTotal',all.length);
+  setText('statNew',all.filter(r=>isNew(r.date)).length);
+  setText('statModels',all.filter(r=>r.type==='model').length);
+  setText('statFin',all.filter(r=>r.financeImpact).length);
+  ['anthropic','openai','gemini','grok','perplexity'].forEach(c=>setText('cnt-'+c,all.filter(r=>r.company===c).length));
+  ['model','update','partnership','api','feature','research'].forEach(t=>setText('cnt-'+t,all.filter(r=>r.type===t).length));
+
+  // Finance spotlight
+  const fsEl=document.getElementById('financeSpotlight');
+  if(fsEl){
+    const finItems=all.filter(r=>r.financeImpact&&r.financeImpactLevel==='high').slice(0,4);
+    fsEl.innerHTML=finItems.map(r=>`
+      <div class="fs-item" onclick="highlightCard('${r.id}')">
+        <div class="fs-ico">${r.type==='partnership'?'🤝':r.type==='model'?'🤖':'⚡'}</div>
+        <div class="fs-body">
+          <div class="fs-title">${esc(r.title)}</div>
+          <div class="fs-meta">${coLabel(r.company)} · ${fmtDateShort(r.date)}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Alert list
+  const alertEl=document.getElementById('alertList');
+  if(alertEl){
+    const recent=[...all].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
+    alertEl.innerHTML=recent.map(r=>`
+      <div class="alert-row" onclick="highlightCard('${r.id}')">
+        <div class="alert-pip-wrap"><div class="alert-pip" style="background:${coColor(r.company)}"></div></div>
+        <div class="alert-text">${esc(r.title)}</div>
+        <div class="alert-time">${fmtDateShort(r.date)}</div>
+      </div>`).join('');
+  }
+
+  // Top social posts (finance-signal first)
+  const socialEl=document.getElementById('topSocialList');
+  if(socialEl){
+    const allPosts=[];
+    all.forEach(r=>(r.socialPosts||[]).forEach(p=>allPosts.push({...p,releaseId:r.id})));
+    const sorted=[
+      ...allPosts.filter(p=>p.financeSignal),
+      ...allPosts.filter(p=>!p.financeSignal&&p.engagement.views!=='—'),
+    ].slice(0,7);
+    socialEl.innerHTML=sorted.map(p=>{
+      const ico=p.platform==='X'?'𝕏':'in';
+      const parts=[];
+      if(p.engagement.views&&p.engagement.views!=='—') parts.push(`👁 ${p.engagement.views}`);
+      if(p.engagement.likes&&p.engagement.likes!=='—') parts.push(`♥ ${p.engagement.likes}`);
+      return `
+        <a href="${esc(p.url)}" target="_blank" rel="noopener" class="social-row ${p.financeSignal?'fin':''}">
+          <div class="sr-platform" style="color:${p.platform==='X'?'#1a1a1a':'#0a66c2'}">${ico}</div>
+          <div class="sr-body">
+            <div class="sr-handle">${esc(p.handle.slice(0,36))}</div>
+            <div class="sr-text">${esc(p.excerpt)}</div>
+            ${parts.length?`<div class="sr-eng">${parts.join(' · ')}</div>`:''}
+          </div>
+          ${p.financeSignal?'<div class="sr-fin">💰</div>':''}
+        </a>`;
+    }).join('')||'<div style="font-size:11px;color:var(--muted)">No posts loaded.</div>';
+  }
+}
+function updateLogMeta(){
+  const n=state.filtered.length;
+  const lbl=state.filter==='finance'?'Finance-Impact Releases':state.filter==='all'?'All Releases':coLabel(state.filter)+' Releases';
+  const titleEl=document.getElementById('logTitle');
+  const metaEl=document.getElementById('logMeta');
+  if(titleEl) titleEl.textContent=lbl;
+  if(metaEl) metaEl.textContent=`${n} release${n!==1?'s':''} · Last updated ${new Date(state.lastRefresh).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOG VIEW
+// ═══════════════════════════════════════════════════════════
+function renderLog(){
+  const container=document.getElementById('releasesContainer');
+  if(!container) return;
+  if(!state.filtered.length){
+    container.innerHTML='<div class="empty"><div class="empty-ico">🔍</div><h3>No releases match this filter</h3></div>';
+    return;
+  }
+  // Use DocumentFragment for performance
+  const frag=document.createDocumentFragment();
+  state.filtered.forEach(r=>{
+    const div=document.createElement('div');
+    div.innerHTML=buildCard(r);
+    const card=div.firstElementChild;
+    // Restore expanded state
+    if(state.expandedIds.has(r.id)){
+      const btn=card.querySelector('.expand-btn');
+      const detail=card.querySelector('.rcard-detail');
+      if(btn) btn.classList.add('open');
+      if(detail) detail.classList.add('open');
+    }
+    frag.appendChild(card);
+  });
+  container.innerHTML='';
+  container.appendChild(frag);
+
+  // Single delegated event listener
+  container.onclick=e=>{
+    const expBtn=e.target.closest('.expand-btn');
+    if(expBtn){
+      const id=expBtn.dataset.id;
+      const detail=document.getElementById('det-'+id);
+      const isOpen=expBtn.classList.toggle('open');
+      if(detail) detail.classList.toggle('open',isOpen);
+      if(isOpen) state.expandedIds.add(id); else state.expandedIds.delete(id);
+      return;
+    }
+    // Click on card-top to also toggle
+    const top=e.target.closest('.rcard-top');
+    if(top&&!e.target.closest('a')&&!e.target.closest('button')){
+      const id=top.dataset.id;
+      const btn=document.querySelector(`.expand-btn[data-id="${id}"]`);
+      if(btn) btn.click();
+    }
+  };
+}
+
+function buildCard(r){
+  const isnew=isNew(r.date);
+  const tagHtml=`<span class="tag tag-${r.type}">${typeLabel(r.type)}</span>`
+    +(r.financeImpact?`<span class="tag tag-fin">💰 Finance ${r.financeImpactLevel||''}</span>`:'')
+    +(isnew?'<span class="tag tag-new">NEW</span>':'');
+
+  // What's new
+  const wnHtml=(r.whatsNew||[]).map(w=>`<div class="ditem"><span class="dbullet dbullet-green">▸</span><span>${esc(w)}</span></div>`).join('');
+
+  // Version compare table
+  let compareHtml='';
+  if(r.vsLastVersion){
+    compareHtml=`
+      <div class="compare-panel">
+        <div class="compare-panel-header">⚡ ${esc(r.vsLastVersion.title)}</div>
+        <table class="ctable">
+          <thead><tr><th>Category</th><th>Before</th><th>Now</th><th>Finance Impact</th></tr></thead>
+          <tbody>${r.vsLastVersion.rows.map(row=>`
+            <tr>
+              <td class="cat">${esc(row.category)}</td>
+              <td><span class="val-before">${esc(row.before)}</span></td>
+              <td><span class="val-after">✓ ${esc(row.after)}</span></td>
+              <td class="val-impact">${esc(row.impact)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  // Finance panel
+  let finHtml='';
+  if(r.financeImpact&&r.financeImpact_detail){
+    const fd=r.financeImpact_detail;
+    finHtml=`
+      <div class="fin-panel">
+        <div class="fin-panel-header">💰 ${esc(fd.headline)}</div>
+        <div class="fin-panel-body">
+          <div class="dlist">${fd.impacts.map(i=>`<div class="ditem"><span class="dbullet dbullet-fin">◆</span><span>${esc(i)}</span></div>`).join('')}</div>
+          ${fd.automation?`<div class="automation-box"><span class="automation-ico">🤖</span><div><strong>What this automates for you:</strong> ${esc(fd.automation)}</div></div>`:''}
+        </div>
+      </div>`;
+  }
+
+  // Social posts
+  let socialHtml='';
+  const posts=(r.socialPosts||[]);
+  if(posts.length){
+    const postsHtml=posts.map(p=>{
+      const parts=[];
+      if(p.engagement.views&&p.engagement.views!=='—') parts.push(`<span class="eng-stat">👁 ${esc(p.engagement.views)}</span>`);
+      if(p.engagement.likes&&p.engagement.likes!=='—') parts.push(`<span class="eng-stat">♥ ${esc(p.engagement.likes)}</span>`);
+      if(p.engagement.reposts&&p.engagement.reposts!=='—') parts.push(`<span class="eng-stat">↺ ${esc(p.engagement.reposts)}</span>`);
+      if(p.engagement.replies&&p.engagement.replies!=='—') parts.push(`<span class="eng-stat">💬 ${esc(p.engagement.replies)}</span>`);
+      if(p.engagement.bookmarks&&p.engagement.bookmarks!=='—') parts.push(`<span class="eng-stat">🔖 ${esc(p.engagement.bookmarks)}</span>`);
+      const platClass=p.platform==='X'?'plat-x':'plat-li';
+      const platLbl=p.platform==='X'?'𝕏 X':'in LinkedIn';
+      return `
+        <div class="spost ${p.financeSignal?'fin':''}">
+          <div class="spost-top">
+            <span class="plat-badge ${platClass}">${platLbl}</span>
+            <span class="spost-handle">${esc(p.handle)}</span>
+            ${p.financeSignal?'<span class="fin-sig">💰 Finance Signal</span>':''}
+            ${parts.length?`<div class="spost-eng">${parts.join('')}</div>`:''}
+          </div>
+          <div class="spost-excerpt">"${esc(p.excerpt)}"</div>
+          <a href="${esc(p.url)}" target="_blank" rel="noopener" class="spost-link">
+            ${p.platform==='X'?'𝕏':'in'} View on ${esc(p.platform)} ↗
+          </a>
+        </div>`;
+    }).join('');
+    socialHtml=`
+      <div class="social-panel">
+        <div class="social-panel-header">📣 Highest-Engagement Posts ${posts.some(p=>p.financeSignal)?'<span class="fin-sig" style="margin-left:6px">💰 Finance-tagged</span>':''}</div>
+        <div class="social-posts">${postsHtml}</div>
+      </div>`;
+  }
+
+  // Source links
+  const srcHtml=(r.sources||[]).map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener" class="source-link">🔗 ${esc(s.label)}</a>`).join('');
+
+  return `
+    <div class="rcard ${r.financeImpact?'fin':''} ${isnew?'isnew':''}" id="card-${r.id}">
+      <div class="rcard-top" data-id="${r.id}">
+        <div class="rcard-badge badge-${r.company}">${coInitial(r.company)}</div>
+        <div class="rcard-body">
+          <div class="rcard-tags">${tagHtml}</div>
+          <div class="rcard-title">${esc(r.title)}</div>
+          <div class="rcard-meta">
+            <span class="rcard-co" style="color:${coColor(r.company)}">${coLabel(r.company)}</span>
+            <span class="dot">·</span>
+            <span class="rcard-date">${fmtDate(r.date)}</span>
+          </div>
+        </div>
+        <div class="rcard-right">
+          <button class="expand-btn" data-id="${r.id}" aria-label="Expand details">▼</button>
+          ${r.sources&&r.sources[0]?`<a href="${esc(r.sources[0].url)}" target="_blank" rel="noopener" class="src-link">↗ Source</a>`:''}
+        </div>
+      </div>
+      <div class="rcard-summary">${esc(r.summary)}</div>
+      <div class="rcard-detail" id="det-${r.id}">
+        <div class="detail-body">
+          <div class="detail-grid">
+            <div class="dbox">
+              <div class="dbox-title">✨ What's New</div>
+              <div class="dlist">${wnHtml||'<span style="color:var(--muted);font-size:11px">See sources for details.</span>'}</div>
+            </div>
+            <div class="dbox">
+              <div class="dbox-title">ℹ Quick Facts</div>
+              <div class="dlist">
+                <div class="ditem"><span class="dbullet dbullet-blue">▸</span><span><strong>Company:</strong> ${coLabel(r.company)}</span></div>
+                <div class="ditem"><span class="dbullet dbullet-blue">▸</span><span><strong>Type:</strong> ${typeLabel(r.type)}</span></div>
+                <div class="ditem"><span class="dbullet dbullet-blue">▸</span><span><strong>Date:</strong> ${fmtDate(r.date)}</span></div>
+                <div class="ditem"><span class="dbullet dbullet-blue">▸</span><span><strong>Finance Impact:</strong> ${r.financeImpact?(r.financeImpactLevel||'Yes'):'Low / None'}</span></div>
+                <div class="ditem"><span class="dbullet dbullet-blue">▸</span><span><strong>Social Posts:</strong> ${(r.socialPosts||[]).length} tracked</span></div>
+              </div>
+            </div>
+          </div>
+          ${compareHtml}
+          ${finHtml}
+          ${socialHtml}
+        </div>
+        ${srcHtml?`<div class="source-links">${srcHtml}</div>`:''}
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMPARE VIEW — FIXED
+// ═══════════════════════════════════════════════════════════
+function populateCompareSelects(){
+  // Show ALL releases in selects (no vsLastVersion filter)
+  const opts=RELEASES.map(r=>`<option value="${r.id}">${coLabel(r.company)} — ${r.title.slice(0,52)}${r.title.length>52?'…':''}</option>`).join('');
+  const blank='<option value="">Select a release…</option>';
+  const selA=document.getElementById('compareA');
+  const selB=document.getElementById('compareB');
+  if(selA){ const v=selA.value; selA.innerHTML=blank+opts; selA.value=v; }
+  if(selB){ const v=selB.value; selB.innerHTML=blank+opts; selB.value=v; }
+}
+
+function runCompare(){
+  const selA=document.getElementById('compareA');
+  const selB=document.getElementById('compareB');
+  if(!selA||!selB){ toast('⚠️','Error','Compare selectors not found.'); return; }
+  const idA=selA.value, idB=selB.value;
+  if(!idA||!idB){ toast('⚠️','Select two releases','Please choose a release from both dropdowns.'); return; }
+  if(idA===idB){ toast('⚠️','Same release','Please select two different releases to compare.'); return; }
+
+  const a=RELEASES.find(r=>r.id===idA);
+  const b=RELEASES.find(r=>r.id===idB);
+  if(!a||!b){ toast('❌','Not found','Could not find the selected releases.'); return; }
+
+  const resultEl=document.getElementById('compareResult');
+  if(!resultEl) return;
+
+  // Build diff table merging rows from both
+  const allCats=new Set([
+    ...((a.vsLastVersion||{}).rows||[]).map(r=>r.category),
+    ...((b.vsLastVersion||{}).rows||[]).map(r=>r.category),
+  ]);
+  let diffRows='';
+  if(allCats.size>0){
+    allCats.forEach(cat=>{
+      const ra=((a.vsLastVersion||{}).rows||[]).find(r=>r.category===cat);
+      const rb=((b.vsLastVersion||{}).rows||[]).find(r=>r.category===cat);
+      diffRows+=`<tr>
+        <td class="dcat">${esc(cat)}</td>
+        <td>${ra?`<span class="dval-a">✓ ${esc(ra.after)}</span><br><span class="dimpact">${esc(ra.impact)}</span>`:'<span class="no-data">—</span>'}</td>
+        <td>${rb?`<span class="dval-b">✓ ${esc(rb.after)}</span><br><span class="dimpact">${esc(rb.impact)}</span>`:'<span class="no-data">—</span>'}</td>
+      </tr>`;
+    });
+  }
+
+  resultEl.className='compare-result visible';
+  resultEl.innerHTML=`
+    <div class="compare-cards">
+      ${buildCompareCard(a,'dval-a')}
+      ${buildCompareCard(b,'dval-b')}
+    </div>
+    ${diffRows?`
+    <div class="diff-table-wrap">
+      <div class="diff-table-title">Side-by-Side Capability Comparison</div>
+      <table class="dtable">
+        <thead><tr>
+          <th style="width:130px">Category</th>
+          <th>${esc(a.title.slice(0,40))}…</th>
+          <th>${esc(b.title.slice(0,40))}…</th>
+        </tr></thead>
+        <tbody>${diffRows}</tbody>
+      </table>
+    </div>`:`
+    <div class="diff-table-wrap">
+      <div class="diff-table-title">Feature Comparison</div>
+      <div style="padding:16px;font-size:12px;color:var(--muted)">
+        No version-to-version comparison data for these releases. See the individual cards above for capabilities.
+      </div>
+    </div>`}`;
+}
+
+function buildCompareCard(r,valClass){
+  return `
+    <div class="cc-card">
+      <div class="cc-header">
+        <div class="rcard-badge badge-${r.company}" style="width:30px;height:30px;font-size:13px">${coInitial(r.company)}</div>
+        <div>
+          <div class="cc-title">${esc(r.title.slice(0,50))}${r.title.length>50?'…':''}</div>
+          <div class="cc-date">${coLabel(r.company)} · ${fmtDate(r.date)}</div>
+        </div>
+      </div>
+      <div class="cc-summary">${esc(r.summary.slice(0,180))}…</div>
+      <div class="cc-features">
+        ${(r.whatsNew||[]).slice(0,4).map(w=>`
+          <div class="cc-feat"><span class="cc-feat-bullet">▸</span><span>${esc(w)}</span></div>`).join('')}
+      </div>
+      ${r.financeImpact?`<div style="margin-top:8px"><span class="tag tag-fin">💰 Finance ${r.financeImpactLevel||'Impact'}</span></div>`:''}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIMELINE VIEW — FIXED
+// ═══════════════════════════════════════════════════════════
+function renderTimeline(){
+  const container=document.getElementById('timelineContainer');
+  if(!container) return; // null-safe guard
+
+  const items=[...state.filtered].sort((a,b)=>b.date.localeCompare(a.date));
+  if(!items.length){
+    container.innerHTML='<div class="empty"><div class="empty-ico">📅</div><h3>No releases match</h3></div>';
+    return;
+  }
+
+  // Group by YYYY-MM
+  const groups={};
+  items.forEach(r=>{
+    const key=r.date.slice(0,7);
+    if(!groups[key]) groups[key]=[];
+    groups[key].push(r);
+  });
+
+  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const html=Object.entries(groups)
+    .sort(([a],[b])=>b.localeCompare(a))
+    .map(([month,releases])=>{
+      const [y,m]=month.split('-');
+      const label=`${MONTHS[parseInt(m)-1]} ${y}`;
+      const itemsHtml=releases.map(r=>`
+        <div class="tl-item ${r.financeImpact?'fin':''}" data-id="${r.id}">
+          <div class="tl-badge badge-${r.company}">${coInitial(r.company)}</div>
+          <div class="tl-content">
+            <div class="tl-title">${esc(r.title)}</div>
+            <div class="tl-meta">
+              <span style="color:${coColor(r.company)};font-weight:600">${coLabel(r.company)}</span>
+              <span>·</span><span>${fmtDate(r.date)}</span>
+            </div>
+            <div class="tl-tags">
+              <span class="tag tag-${r.type}" style="font-size:8px;padding:1px 5px">${typeLabel(r.type)}</span>
+              ${r.financeImpact?'<span class="tag tag-fin" style="font-size:8px;padding:1px 5px">💰 Finance</span>':''}
+            </div>
+          </div>
+        </div>`).join('');
+      return `
+        <div class="tl-group">
+          <div class="tl-month-label">
+            ${label}<div class="tl-month-line"></div>
+            <span class="tl-count">${releases.length}</span>
+          </div>
+          <div class="tl-items">${itemsHtml}</div>
+        </div>`;
+    }).join('');
+
+  container.innerHTML=html;
+
+  // Click to jump to card in Log view
+  container.querySelectorAll('.tl-item').forEach(el=>{
+    el.onclick=()=>{ switchView('log'); setTimeout(()=>highlightCard(el.dataset.id),80); };
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// VIEW SWITCHER — FIXED (null-safe)
+// ═══════════════════════════════════════════════════════════
+function switchView(view){
+  state.currentView=view;
+  const views=['log','compare','timeline'];
+  views.forEach(v=>{
+    const viewEl=document.getElementById(v+'View');
+    const tabEl=document.getElementById('tab-'+v);
+    if(viewEl){
+      if(v==='log') viewEl.style.display=(v===view)?'':'none';
+      else {
+        // compare and timeline use display class
+        viewEl.style.display=(v===view)?'block':'none';
+      }
+    }
+    if(tabEl) tabEl.classList.toggle('active',v===view);
+  });
+  // Render on first switch
+  if(view==='timeline') renderTimeline();
+  if(view==='compare') populateCompareSelects();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HIGHLIGHT CARD
+// ═══════════════════════════════════════════════════════════
+function highlightCard(id){
+  const card=document.getElementById('card-'+id);
+  if(!card) return;
+  card.scrollIntoView({behavior:'smooth',block:'center'});
+  const orig=card.style.outline;
+  card.style.outline='2px solid var(--accent2)';
+  card.style.outlineOffset='2px';
+  setTimeout(()=>{ card.style.outline=orig; card.style.outlineOffset=''; },1800);
+  // Auto-expand if not open
+  const btn=card.querySelector('.expand-btn');
+  if(btn&&!btn.classList.contains('open')) btn.click();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+function toast(ico,title,msg,duration=4000){
+  const dock=document.getElementById('toastDock');
+  if(!dock) return;
+  const el=document.createElement('div');
+  el.className='toast';
+  el.innerHTML=`<div class="toast-ico">${ico}</div>
+    <div class="toast-body"><div class="toast-title">${esc(title)}</div><div class="toast-msg">${esc(msg)}</div></div>
+    <button class="toast-x" onclick="this.parentElement.remove()">×</button>`;
+  dock.appendChild(el);
+  setTimeout(()=>{
+    el.classList.add('fadeout');
+    setTimeout(()=>el.remove(),320);
+  },duration);
+}
+
+// ═══════════════════════════════════════════════════════════
+// REAL-TIME REFRESH — 10-MINUTE INTERVAL WITH COUNTDOWN
+// ═══════════════════════════════════════════════════════════
+const REFRESH_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
+let nextRefreshAt = Date.now() + REFRESH_INTERVAL_MS;
+let countdownTimer = null;
+let refreshInProgress = false;
+
+function startCountdown(){
+  if(countdownTimer) clearInterval(countdownTimer);
+  nextRefreshAt = Date.now() + REFRESH_INTERVAL_MS;
+  countdownTimer = setInterval(tickCountdown, 1000);
+  tickCountdown();
+}
+
+function tickCountdown(){
+  const el=document.getElementById('countdownDisplay');
+  if(!el) return;
+  const remaining=Math.max(0, nextRefreshAt - Date.now());
+  const mins=Math.floor(remaining/60000);
+  const secs=Math.floor((remaining%60000)/1000);
+  const label=`↻ ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  el.textContent=label;
+  el.classList.toggle('soon', remaining < 60000);
+
+  if(remaining<=0){
+    clearInterval(countdownTimer);
+    autoRefresh();
+  }
+}
+
+async function autoRefresh(){
+  if(refreshInProgress) return;
+  refreshInProgress=true;
+  const btn=document.getElementById('refreshBtn');
+  if(btn) btn.classList.add('spinning');
+
+  // Simulate checking for updates (in production this would hit /api/releases)
+  await new Promise(r=>setTimeout(r,1200));
+
+  state.lastRefresh=Date.now();
+  applyFilters();
+  toast('✅','Data Refreshed','Release database is up to date. Monitoring Anthropic, OpenAI, Gemini & Grok.', 3000);
+
+  if(btn) btn.classList.remove('spinning');
+  refreshInProgress=false;
+
+  // Check for new releases to surface as alerts
+  showNewReleaseAlerts();
+
+  // Restart countdown
+  startCountdown();
+}
+
+function manualRefresh(){
+  nextRefreshAt=Date.now();
+  tickCountdown();
+}
+
+function applyPendingUpdate(){
+  document.getElementById('refreshBanner').classList.remove('show');
+  state.pendingUpdate=false;
+  applyFilters();
+  toast('✅','Updated','Showing latest releases.');
+}
+
+// ═══════════════════════════════════════════════════════════
+// NEW RELEASE ALERTS
+// ═══════════════════════════════════════════════════════════
+function showNewReleaseAlerts(){
+  const fresh=RELEASES.filter(r=>isNew(r.date)&&!state.alertsShown.has(r.id));
+  fresh.forEach((r,i)=>{
+    setTimeout(()=>{
+      if(!state.alertsShown.has(r.id)){
+        state.alertsShown.add(r.id);
+        const ico=r.financeImpact?'💰':r.type==='model'?'🤖':r.type==='partnership'?'🤝':'⚡';
+        toast(ico,`New: ${coLabel(r.company)}`,r.title.slice(0,72),6000);
+      }
+    },i*1000);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+function init(){
+  // Set initial view states (CSS classes, not inline display)
+  const compareEl=document.getElementById('compareView');
+  const timelineEl=document.getElementById('timelineView');
+  if(compareEl) compareEl.style.display='none';
+  if(timelineEl) timelineEl.style.display='none';
+
+  // Initial data load
+  state.filtered=sortItems(RELEASES);
+  state.lastRefresh=Date.now();
+
+  renderLog();
+  updateSidebar();
+  updateLogMeta();
+  populateCompareSelects();
+
+  // Start countdown
+  startCountdown();
+
+  // Show new release toasts after short delay
+  setTimeout(showNewReleaseAlerts, 1500);
+}
+
+// Run on DOM ready
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
