@@ -803,50 +803,71 @@ button { font-family: var(--font); }
   animation: spin 0.7s linear infinite;
 }
 
+/* ── MOBILE FILTER STRIP ── */
+.mobile-filters { display: none; }
+
 /* Responsive */
 @media (max-width: 900px) {
   .layout { grid-template-columns: 1fr; }
   .sidebar { display: none; }
 
-  /* Header: brand + right controls in row 1, filter chips in row 2 */
-  .header {
-    height: auto;
-    flex-wrap: wrap;
-  }
+  /* Header: single clean row — no wrapping */
+  .header { height: 56px; flex-wrap: nowrap; }
   .header-brand {
     flex: 1;
     width: auto;
     min-width: 0;
     border-right: none;
-    height: 52px;
-  }
-  .header-right {
-    order: 2;
-    border-left: none;
-    padding: 0 12px;
-    height: 52px;
-    flex-shrink: 0;
-  }
-  .header-controls {
-    order: 3;
-    width: 100%;
-    padding: 0;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    height: 56px;
     overflow: hidden;
   }
-  .header-filters {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding: 8px 12px;
-    gap: 6px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+  .brand-text { white-space: nowrap; }
+  /* Hide the desktop nav chips from the header on mobile */
+  .header-controls { display: none; }
+  .header-right {
+    border-left: none;
+    padding: 0 12px;
+    height: 56px;
+    flex-shrink: 0;
+    gap: 8px;
   }
-  .header-filters::-webkit-scrollbar { display: none; }
   .hdivider { display: none; }
 
-  /* Adjust sticky layout offset for taller header */
-  .layout { min-height: calc(100vh - 104px); }
+  /* Mobile filter strip — appears between header and content */
+  .mobile-filters {
+    display: flex;
+    overflow-x: auto;
+    gap: 6px;
+    padding: 10px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    position: sticky;
+    top: 56px;
+    z-index: 200;
+  }
+  .mobile-filters::-webkit-scrollbar { display: none; }
+
+  /* Light-background chip overrides for mobile strip */
+  .mobile-filters .hchip {
+    color: var(--text2);
+    border-color: var(--border2);
+    background: transparent;
+    font-size: 12px;
+  }
+  .mobile-filters .hchip:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(62,29,35,0.06);
+  }
+  .mobile-filters .hchip.active {
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .layout { min-height: calc(100vh - 100px); }
 }
 </style>
 </head>
@@ -885,6 +906,16 @@ button { font-family: var(--font); }
     </button>
   </div>
 </header>
+
+<!-- Mobile filter strip (shown only on mobile, sticky below header) -->
+<div class="mobile-filters" id="mobileFilters">
+  <button class="hchip active" data-filter="all" onclick="setFilter('all')">All</button>
+  <button class="hchip" data-filter="anthropic" onclick="setFilter('anthropic')">Anthropic</button>
+  <button class="hchip" data-filter="openai" onclick="setFilter('openai')">OpenAI</button>
+  <button class="hchip" data-filter="gemini" onclick="setFilter('gemini')">Gemini</button>
+  <button class="hchip" data-filter="grok" onclick="setFilter('grok')">Grok</button>
+  <button class="hchip" data-filter="perplexity" onclick="setFilter('perplexity')">Perplexity</button>
+</div>
 
 <div class="layout">
   <!-- SIDEBAR -->
