@@ -5,29 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Release Intelligence</title>
 <style>
-/* ── SCANDINAVIAN DESIGN SYSTEM ────────────────────────── */
+/* ── DALOOPA DESIGN SYSTEM ──────────────────────────────── */
 :root {
-  --bg:       #f5f5f0;
-  --bg2:      #eeede8;
+  --bg:       #ffffff;
+  --bg2:      #F8F8F6;
   --surface:  #ffffff;
-  --surface2: #f9f9f6;
-  --border:   #e0dfd8;
-  --border2:  #ccccc4;
+  --surface2: #F8F8F6;
+  --border:   #E8E8E4;
+  --border2:  #D0D0CC;
   --text:     #1a1a1a;
   --text2:    #4a4a4a;
   --muted:    #7a7a7a;
   --muted2:   #adadad;
-  --accent:   #1a1a2e;
-  --accent2:  #2d5be3;
+  --accent:   #6B1418;
+  --accent2:  #8B1E23;
   --green:    #1d7a4f;
   --green-bg: #eaf4ef;
   --orange:   #c75b1a;
   --orange-bg:#fdf1e8;
   --red:      #c0392b;
   --red-bg:   #fdf0ee;
-  --finance:  #8b6914;
-  --finance-bg:#fdf8ed;
-  --finance-border: #e8d48a;
+  --finance:  #6B1418;
+  --finance-bg:#fdf3f3;
+  --finance-border: #e8c4c4;
   --anthropic:  #8b4513;
   --openai:     #0d7a5a;
   --gemini:     #1a56c2;
@@ -89,11 +89,12 @@ button { font-family: var(--font); }
 }
 .brand-mark {
   width: 28px; height: 28px;
-  background: var(--accent2);
+  background: rgba(255,255,255,0.18);
   border-radius: var(--r-sm);
   display: flex; align-items: center; justify-content: center;
   font-size: 13px; font-weight: 800; color: #fff;
   flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.28);
 }
 .brand-text { font-size: 13px; font-weight: 700; letter-spacing: -0.2px; }
 .brand-sub { font-size: 10px; opacity: 0.5; letter-spacing: 0.4px; font-weight: 400; }
@@ -120,9 +121,16 @@ button { font-family: var(--font); }
   display: flex; align-items: center; gap: 5px;
 }
 .hchip:hover { color: #fff; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
-.hchip.active { background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.4); }
-.hchip.fin.active { background: var(--finance-bg); border-color: var(--finance-border); color: var(--finance); }
+.hchip.active { background: rgba(255,255,255,0.18); color: #fff; border-color: rgba(255,255,255,0.4); }
 .hdivider { width: 1px; height: 18px; background: rgba(255,255,255,0.15); flex-shrink: 0; margin: 0 4px; }
+.chip-cnt {
+  background: rgba(255,255,255,0.16);
+  color: rgba(255,255,255,0.75);
+  font-size: 10px; font-weight: 700;
+  padding: 1px 5px; border-radius: 99px;
+  min-width: 18px; text-align: center;
+}
+.hchip.active .chip-cnt { background: rgba(255,255,255,0.25); color: #fff; }
 
 .header-right {
   display: flex; align-items: center; gap: 10px;
@@ -361,6 +369,8 @@ button { font-family: var(--font); }
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition), border-color var(--transition);
   contain: layout style;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 140px;
 }
 .rcard:hover { box-shadow: var(--shadow); }
 .rcard.fin { border-left: 3px solid var(--finance-border); }
@@ -470,17 +480,17 @@ button { font-family: var(--font); }
 
 /* Version comparison */
 .compare-panel {
-  border: 1px solid #e0e0f0;
+  border: 1px solid var(--border);
   border-radius: var(--r);
   overflow: hidden;
   background: var(--surface);
 }
 .compare-panel-header {
   padding: 9px 12px;
-  background: #f0f0fa;
-  border-bottom: 1px solid #e0e0f0;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
   font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
-  color: #3a3a8a;
+  color: var(--text2);
   display: flex; align-items: center; gap: 6px;
 }
 .ctable { width: 100%; border-collapse: collapse; font-size: 11px; }
@@ -616,7 +626,7 @@ button { font-family: var(--font); }
   font-size: 12px; font-weight: 700; cursor: pointer;
   transition: var(--transition); flex-shrink: 0;
 }
-.compare-go:hover { background: #2d2d4e; }
+.compare-go:hover { background: var(--accent2); }
 
 .compare-result { display: none; }
 .compare-result.visible { display: block; }
@@ -727,7 +737,7 @@ button { font-family: var(--font); }
 @keyframes toastOut {
   to { transform: translateX(110%); opacity: 0; }
 }
-.toast-ico  { font-size: 16px; flex-shrink: 0; }
+.toast-ico  { font-size: 12px; font-weight: 800; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; }
 .toast-body { flex: 1; }
 .toast-title { font-size: 12px; font-weight: 700; margin-bottom: 1px; }
 .toast-msg  { font-size: 11px; color: var(--text2); line-height: 1.4; }
@@ -785,15 +795,13 @@ button { font-family: var(--font); }
 
   <div class="header-controls">
     <div class="header-filters" id="headerFilters">
-      <button class="hchip active" data-filter="all" onclick="setFilter('all')">All</button>
+      <button class="hchip active" data-filter="all" onclick="setFilter('all')">All <span class="chip-cnt" id="chip-cnt-all">—</span></button>
       <div class="hdivider"></div>
-      <button class="hchip" data-filter="anthropic" onclick="setFilter('anthropic')">Anthropic</button>
-      <button class="hchip" data-filter="openai"    onclick="setFilter('openai')">OpenAI</button>
-      <button class="hchip" data-filter="gemini"    onclick="setFilter('gemini')">Gemini</button>
-      <button class="hchip" data-filter="grok"        onclick="setFilter('grok')">Grok</button>
-      <button class="hchip" data-filter="perplexity" onclick="setFilter('perplexity')">Perplexity</button>
-      <div class="hdivider"></div>
-      <button class="hchip fin" data-filter="finance" onclick="setFilter('finance')">💰 Finance</button>
+      <button class="hchip" data-filter="anthropic" onclick="setFilter('anthropic')">Anthropic <span class="chip-cnt" id="chip-cnt-anthropic">—</span></button>
+      <button class="hchip" data-filter="openai"    onclick="setFilter('openai')">OpenAI <span class="chip-cnt" id="chip-cnt-openai">—</span></button>
+      <button class="hchip" data-filter="gemini"    onclick="setFilter('gemini')">Gemini <span class="chip-cnt" id="chip-cnt-gemini">—</span></button>
+      <button class="hchip" data-filter="grok"      onclick="setFilter('grok')">Grok <span class="chip-cnt" id="chip-cnt-grok">—</span></button>
+      <button class="hchip" data-filter="perplexity" onclick="setFilter('perplexity')">Perplexity <span class="chip-cnt" id="chip-cnt-perplexity">—</span></button>
     </div>
   </div>
 
@@ -809,29 +817,6 @@ button { font-family: var(--font); }
 <div class="layout">
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <!-- Stats -->
-    <div class="sb-section">
-      <span class="sb-label">Overview</span>
-      <div class="stats-grid">
-        <div class="stat-cell">
-          <div class="stat-n" id="statTotal" style="color:var(--accent)">—</div>
-          <div class="stat-l">Total</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-n" id="statNew" style="color:var(--green)">—</div>
-          <div class="stat-l">This Week</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-n" id="statModels" style="color:var(--accent2)">—</div>
-          <div class="stat-l">Models</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-n" id="statFin" style="color:var(--finance)">—</div>
-          <div class="stat-l">Finance</div>
-        </div>
-      </div>
-    </div>
-
     <!-- Company -->
     <div class="sb-section">
       <span class="sb-label">By Company</span>
@@ -868,18 +853,18 @@ button { font-family: var(--font); }
     <div class="sb-section">
       <span class="sb-label">By Type</span>
       <div class="type-list" id="typeList">
-        <div class="type-row" onclick="setTypeFilter('model')"       data-type="model">       <span class="type-label">🤖 Model Release</span> <span class="type-n" id="cnt-model">—</span></div>
-        <div class="type-row" onclick="setTypeFilter('update')"      data-type="update">      <span class="type-label">⚡ Model Update</span>  <span class="type-n" id="cnt-update">—</span></div>
-        <div class="type-row" onclick="setTypeFilter('partnership')" data-type="partnership"> <span class="type-label">🤝 Partnership</span>    <span class="type-n" id="cnt-partnership">—</span></div>
-        <div class="type-row" onclick="setTypeFilter('api')"         data-type="api">         <span class="type-label">🔌 API / Platform</span><span class="type-n" id="cnt-api">—</span></div>
-        <div class="type-row" onclick="setTypeFilter('feature')"     data-type="feature">     <span class="type-label">✨ Feature</span>        <span class="type-n" id="cnt-feature">—</span></div>
-        <div class="type-row" onclick="setTypeFilter('research')"    data-type="research">    <span class="type-label">🔬 Research</span>       <span class="type-n" id="cnt-research">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('model')"       data-type="model">       <span class="type-label">Model Release</span> <span class="type-n" id="cnt-model">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('update')"      data-type="update">      <span class="type-label">Model Update</span>  <span class="type-n" id="cnt-update">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('partnership')" data-type="partnership"> <span class="type-label">Partnership</span>    <span class="type-n" id="cnt-partnership">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('api')"         data-type="api">         <span class="type-label">API / Platform</span><span class="type-n" id="cnt-api">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('feature')"     data-type="feature">     <span class="type-label">Feature</span>        <span class="type-n" id="cnt-feature">—</span></div>
+        <div class="type-row" onclick="setTypeFilter('research')"    data-type="research">    <span class="type-label">Research</span>       <span class="type-n" id="cnt-research">—</span></div>
       </div>
     </div>
 
     <!-- Finance Spotlight -->
     <div class="sb-section">
-      <span class="sb-label">💰 Finance Spotlight</span>
+      <span class="sb-label">Finance Spotlight</span>
       <div class="finance-spotlight">
         <div class="fs-header">High-Impact Releases</div>
         <div id="financeSpotlight"><div style="font-size:11px;color:var(--muted)">Loading…</div></div>
@@ -896,7 +881,7 @@ button { font-family: var(--font); }
 
     <!-- Top Social Posts -->
     <div class="sb-section">
-      <span class="sb-label">🔥 Top Social Posts</span>
+      <span class="sb-label">Top Social Posts</span>
       <div class="social-list" id="topSocialList">
         <div style="font-size:11px;color:var(--muted)">Loading…</div>
       </div>
@@ -907,9 +892,9 @@ button { font-family: var(--font); }
   <main class="main" id="mainArea">
     <!-- View tabs -->
     <div class="view-tabs" role="tablist">
-      <button class="vtab active" id="tab-log"      onclick="switchView('log')"     role="tab">📋 Release Log</button>
-      <button class="vtab"        id="tab-compare"  onclick="switchView('compare')" role="tab">⚡ Compare</button>
-      <button class="vtab"        id="tab-timeline" onclick="switchView('timeline')" role="tab">📅 Timeline</button>
+      <button class="vtab active" id="tab-log"      onclick="switchView('log')"     role="tab">Release Log</button>
+      <button class="vtab"        id="tab-compare"  onclick="switchView('compare')" role="tab">Compare</button>
+      <button class="vtab"        id="tab-timeline" onclick="switchView('timeline')" role="tab">Timeline</button>
     </div>
 
     <!-- LOG VIEW -->
@@ -983,7 +968,7 @@ const RELEASES = [
     ],
     vsLastVersion:null,
     financeImpact_detail:{
-      headline:'🔥 Highest Finance Impact — Direct Analyst Workflow Integration',
+      headline:'Highest Finance Impact — Direct Analyst Workflow Integration',
       impacts:[
         'Ask Claude to "pull Q3 EBITDA for MSFT, AAPL, GOOGL and compare margins" — live S&P Capital IQ natively',
         'LSEG Workspace MCP server: tick data, price history, news feeds in natural language',
@@ -1768,7 +1753,7 @@ const RELEASES = [
       ]
     },
     financeImpact_detail:{
-      headline:'🔥 High Finance Impact — Autonomous Multi-Model Research & Delivery Agent',
+      headline:'High Finance Impact — Autonomous Multi-Model Research & Delivery Agent',
       impacts:[
         'Run overnight: "Build a full comp table for the S&P 500 tech sector with margins, EV/EBITDA, and consensus estimates" — wake up to a formatted Excel deliverable',
         'Automates end-to-end initiation of coverage workflows: research → model → memo → deck',
@@ -1891,14 +1876,18 @@ function applySort(){
   state.filtered=sortItems(state.filtered);
   renderLog(); renderTimeline();
 }
+let _filterDebounce=null;
 function applyFilters(){
-  let items=[...RELEASES];
-  if(state.filter==='finance') items=items.filter(r=>r.financeImpact);
-  else if(state.filter!=='all') items=items.filter(r=>r.company===state.filter);
-  if(state.typeFilter) items=items.filter(r=>r.type===state.typeFilter);
-  state.filtered=sortItems(items);
-  renderLog(); renderTimeline(); populateCompareSelects();
-  updateLogMeta(); updateSidebar();
+  if(_filterDebounce) cancelAnimationFrame(_filterDebounce);
+  _filterDebounce=requestAnimationFrame(()=>{
+    let items=[...RELEASES];
+    if(state.filter==='finance') items=items.filter(r=>r.financeImpact);
+    else if(state.filter!=='all') items=items.filter(r=>r.company===state.filter);
+    if(state.typeFilter) items=items.filter(r=>r.type===state.typeFilter);
+    state.filtered=sortItems(items);
+    renderLog(); renderTimeline(); populateCompareSelects();
+    updateLogMeta(); updateSidebar();
+  });
 }
 function sortItems(items){
   const fl={high:3,medium:2,low:1};
@@ -1924,11 +1913,13 @@ function sortItems(items){
 function updateSidebar(){
   const all=RELEASES;
   const setText=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
-  setText('statTotal',all.length);
-  setText('statNew',all.filter(r=>isNew(r.date)).length);
-  setText('statModels',all.filter(r=>r.type==='model').length);
-  setText('statFin',all.filter(r=>r.financeImpact).length);
-  ['anthropic','openai','gemini','grok','perplexity'].forEach(c=>setText('cnt-'+c,all.filter(r=>r.company===c).length));
+  // Company counts — sidebar rows + nav chip badges
+  ['anthropic','openai','gemini','grok','perplexity'].forEach(c=>{
+    const n=all.filter(r=>r.company===c).length;
+    setText('cnt-'+c,n);
+    setText('chip-cnt-'+c,n);
+  });
+  setText('chip-cnt-all',all.length);
   ['model','update','partnership','api','feature','research'].forEach(t=>setText('cnt-'+t,all.filter(r=>r.type===t).length));
 
   // Finance spotlight
@@ -1937,7 +1928,6 @@ function updateSidebar(){
     const finItems=all.filter(r=>r.financeImpact&&r.financeImpactLevel==='high').slice(0,4);
     fsEl.innerHTML=finItems.map(r=>`
       <div class="fs-item" onclick="highlightCard('${r.id}')">
-        <div class="fs-ico">${r.type==='partnership'?'🤝':r.type==='model'?'🤖':'⚡'}</div>
         <div class="fs-body">
           <div class="fs-title">${esc(r.title)}</div>
           <div class="fs-meta">${coLabel(r.company)} · ${fmtDateShort(r.date)}</div>
@@ -1967,10 +1957,10 @@ function updateSidebar(){
       ...allPosts.filter(p=>!p.financeSignal&&p.engagement.views!=='—'),
     ].slice(0,7);
     socialEl.innerHTML=sorted.map(p=>{
-      const ico=p.platform==='X'?'𝕏':'in';
+      const ico=p.platform==='X'?'X':'in';
       const parts=[];
-      if(p.engagement.views&&p.engagement.views!=='—') parts.push(`👁 ${p.engagement.views}`);
-      if(p.engagement.likes&&p.engagement.likes!=='—') parts.push(`♥ ${p.engagement.likes}`);
+      if(p.engagement.views&&p.engagement.views!=='—') parts.push(`${p.engagement.views} views`);
+      if(p.engagement.likes&&p.engagement.likes!=='—') parts.push(`${p.engagement.likes} likes`);
       return `
         <a href="${esc(p.url)}" target="_blank" rel="noopener" class="social-row ${p.financeSignal?'fin':''}">
           <div class="sr-platform" style="color:${p.platform==='X'?'#1a1a1a':'#0a66c2'}">${ico}</div>
@@ -1979,7 +1969,7 @@ function updateSidebar(){
             <div class="sr-text">${esc(p.excerpt)}</div>
             ${parts.length?`<div class="sr-eng">${parts.join(' · ')}</div>`:''}
           </div>
-          ${p.financeSignal?'<div class="sr-fin">💰</div>':''}
+          ${p.financeSignal?'<div class="sr-fin">FIN</div>':''}
         </a>`;
     }).join('')||'<div style="font-size:11px;color:var(--muted)">No posts loaded.</div>';
   }
@@ -2000,7 +1990,7 @@ function renderLog(){
   const container=document.getElementById('releasesContainer');
   if(!container) return;
   if(!state.filtered.length){
-    container.innerHTML='<div class="empty"><div class="empty-ico">🔍</div><h3>No releases match this filter</h3></div>';
+    container.innerHTML='<div class="empty"><div class="empty-ico"></div><h3>No releases match this filter</h3></div>';
     return;
   }
   // Use DocumentFragment for performance
@@ -2018,8 +2008,10 @@ function renderLog(){
     }
     frag.appendChild(card);
   });
-  container.innerHTML='';
-  container.appendChild(frag);
+  requestAnimationFrame(()=>{
+    container.innerHTML='';
+    container.appendChild(frag);
+  });
 
   // Single delegated event listener
   container.onclick=e=>{
@@ -2045,7 +2037,7 @@ function renderLog(){
 function buildCard(r){
   const isnew=isNew(r.date);
   const tagHtml=`<span class="tag tag-${r.type}">${typeLabel(r.type)}</span>`
-    +(r.financeImpact?`<span class="tag tag-fin">💰 Finance ${r.financeImpactLevel||''}</span>`:'')
+    +(r.financeImpact?`<span class="tag tag-fin">Finance ${r.financeImpactLevel||''}</span>`:'')
     +(isnew?'<span class="tag tag-new">NEW</span>':'');
 
   // What's new
@@ -2056,7 +2048,7 @@ function buildCard(r){
   if(r.vsLastVersion){
     compareHtml=`
       <div class="compare-panel">
-        <div class="compare-panel-header">⚡ ${esc(r.vsLastVersion.title)}</div>
+        <div class="compare-panel-header">${esc(r.vsLastVersion.title)}</div>
         <table class="ctable">
           <thead><tr><th>Category</th><th>Before</th><th>Now</th><th>Finance Impact</th></tr></thead>
           <tbody>${r.vsLastVersion.rows.map(row=>`
@@ -2077,10 +2069,10 @@ function buildCard(r){
     const fd=r.financeImpact_detail;
     finHtml=`
       <div class="fin-panel">
-        <div class="fin-panel-header">💰 ${esc(fd.headline)}</div>
+        <div class="fin-panel-header">${esc(fd.headline)}</div>
         <div class="fin-panel-body">
           <div class="dlist">${fd.impacts.map(i=>`<div class="ditem"><span class="dbullet dbullet-fin">◆</span><span>${esc(i)}</span></div>`).join('')}</div>
-          ${fd.automation?`<div class="automation-box"><span class="automation-ico">🤖</span><div><strong>What this automates for you:</strong> ${esc(fd.automation)}</div></div>`:''}
+          ${fd.automation?`<div class="automation-box"><div><strong>What this automates for you:</strong> ${esc(fd.automation)}</div></div>`:''}
         </div>
       </div>`;
   }
@@ -2091,36 +2083,36 @@ function buildCard(r){
   if(posts.length){
     const postsHtml=posts.map(p=>{
       const parts=[];
-      if(p.engagement.views&&p.engagement.views!=='—') parts.push(`<span class="eng-stat">👁 ${esc(p.engagement.views)}</span>`);
-      if(p.engagement.likes&&p.engagement.likes!=='—') parts.push(`<span class="eng-stat">♥ ${esc(p.engagement.likes)}</span>`);
-      if(p.engagement.reposts&&p.engagement.reposts!=='—') parts.push(`<span class="eng-stat">↺ ${esc(p.engagement.reposts)}</span>`);
-      if(p.engagement.replies&&p.engagement.replies!=='—') parts.push(`<span class="eng-stat">💬 ${esc(p.engagement.replies)}</span>`);
-      if(p.engagement.bookmarks&&p.engagement.bookmarks!=='—') parts.push(`<span class="eng-stat">🔖 ${esc(p.engagement.bookmarks)}</span>`);
+      if(p.engagement.views&&p.engagement.views!=='—') parts.push(`<span class="eng-stat">${esc(p.engagement.views)} views</span>`);
+      if(p.engagement.likes&&p.engagement.likes!=='—') parts.push(`<span class="eng-stat">${esc(p.engagement.likes)} likes</span>`);
+      if(p.engagement.reposts&&p.engagement.reposts!=='—') parts.push(`<span class="eng-stat">${esc(p.engagement.reposts)} reposts</span>`);
+      if(p.engagement.replies&&p.engagement.replies!=='—') parts.push(`<span class="eng-stat">${esc(p.engagement.replies)} replies</span>`);
+      if(p.engagement.bookmarks&&p.engagement.bookmarks!=='—') parts.push(`<span class="eng-stat">${esc(p.engagement.bookmarks)} saves</span>`);
       const platClass=p.platform==='X'?'plat-x':'plat-li';
-      const platLbl=p.platform==='X'?'𝕏 X':'in LinkedIn';
+      const platLbl=p.platform==='X'?'X':'LinkedIn';
       return `
         <div class="spost ${p.financeSignal?'fin':''}">
           <div class="spost-top">
             <span class="plat-badge ${platClass}">${platLbl}</span>
             <span class="spost-handle">${esc(p.handle)}</span>
-            ${p.financeSignal?'<span class="fin-sig">💰 Finance Signal</span>':''}
+            ${p.financeSignal?'<span class="fin-sig">Finance Signal</span>':''}
             ${parts.length?`<div class="spost-eng">${parts.join('')}</div>`:''}
           </div>
           <div class="spost-excerpt">"${esc(p.excerpt)}"</div>
           <a href="${esc(p.url)}" target="_blank" rel="noopener" class="spost-link">
-            ${p.platform==='X'?'𝕏':'in'} View on ${esc(p.platform)} ↗
+            View on ${esc(p.platform)} ↗
           </a>
         </div>`;
     }).join('');
     socialHtml=`
       <div class="social-panel">
-        <div class="social-panel-header">📣 Highest-Engagement Posts ${posts.some(p=>p.financeSignal)?'<span class="fin-sig" style="margin-left:6px">💰 Finance-tagged</span>':''}</div>
+        <div class="social-panel-header">Highest-Engagement Posts ${posts.some(p=>p.financeSignal)?'<span class="fin-sig" style="margin-left:6px">Finance-tagged</span>':''}</div>
         <div class="social-posts">${postsHtml}</div>
       </div>`;
   }
 
   // Source links
-  const srcHtml=(r.sources||[]).map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener" class="source-link">🔗 ${esc(s.label)}</a>`).join('');
+  const srcHtml=(r.sources||[]).map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener" class="source-link">↗ ${esc(s.label)}</a>`).join('');
 
   return `
     <div class="rcard ${r.financeImpact?'fin':''} ${isnew?'isnew':''}" id="card-${r.id}">
@@ -2145,11 +2137,11 @@ function buildCard(r){
         <div class="detail-body">
           <div class="detail-grid">
             <div class="dbox">
-              <div class="dbox-title">✨ What's New</div>
+              <div class="dbox-title">What's New</div>
               <div class="dlist">${wnHtml||'<span style="color:var(--muted);font-size:11px">See sources for details.</span>'}</div>
             </div>
             <div class="dbox">
-              <div class="dbox-title">ℹ Quick Facts</div>
+              <div class="dbox-title">Quick Facts</div>
               <div class="dlist">
                 <div class="ditem"><span class="dbullet dbullet-blue">▸</span><span><strong>Company:</strong> ${coLabel(r.company)}</span></div>
                 <div class="ditem"><span class="dbullet dbullet-blue">▸</span><span><strong>Type:</strong> ${typeLabel(r.type)}</span></div>
@@ -2184,14 +2176,14 @@ function populateCompareSelects(){
 function runCompare(){
   const selA=document.getElementById('compareA');
   const selB=document.getElementById('compareB');
-  if(!selA||!selB){ toast('⚠️','Error','Compare selectors not found.'); return; }
+  if(!selA||!selB){ toast('!','Error','Compare selectors not found.'); return; }
   const idA=selA.value, idB=selB.value;
-  if(!idA||!idB){ toast('⚠️','Select two releases','Please choose a release from both dropdowns.'); return; }
-  if(idA===idB){ toast('⚠️','Same release','Please select two different releases to compare.'); return; }
+  if(!idA||!idB){ toast('!','Select two releases','Please choose a release from both dropdowns.'); return; }
+  if(idA===idB){ toast('!','Same release','Please select two different releases to compare.'); return; }
 
   const a=RELEASES.find(r=>r.id===idA);
   const b=RELEASES.find(r=>r.id===idB);
-  if(!a||!b){ toast('❌','Not found','Could not find the selected releases.'); return; }
+  if(!a||!b){ toast('!','Not found','Could not find the selected releases.'); return; }
 
   const resultEl=document.getElementById('compareResult');
   if(!resultEl) return;
@@ -2255,7 +2247,7 @@ function buildCompareCard(r,valClass){
         ${(r.whatsNew||[]).slice(0,4).map(w=>`
           <div class="cc-feat"><span class="cc-feat-bullet">▸</span><span>${esc(w)}</span></div>`).join('')}
       </div>
-      ${r.financeImpact?`<div style="margin-top:8px"><span class="tag tag-fin">💰 Finance ${r.financeImpactLevel||'Impact'}</span></div>`:''}
+      ${r.financeImpact?`<div style="margin-top:8px"><span class="tag tag-fin">Finance ${r.financeImpactLevel||'Impact'}</span></div>`:''}
     </div>`;
 }
 
@@ -2268,7 +2260,7 @@ function renderTimeline(){
 
   const items=[...state.filtered].sort((a,b)=>b.date.localeCompare(a.date));
   if(!items.length){
-    container.innerHTML='<div class="empty"><div class="empty-ico">📅</div><h3>No releases match</h3></div>';
+    container.innerHTML='<div class="empty"><div class="empty-ico"></div><h3>No releases match</h3></div>';
     return;
   }
 
@@ -2297,7 +2289,7 @@ function renderTimeline(){
             </div>
             <div class="tl-tags">
               <span class="tag tag-${r.type}" style="font-size:8px;padding:1px 5px">${typeLabel(r.type)}</span>
-              ${r.financeImpact?'<span class="tag tag-fin" style="font-size:8px;padding:1px 5px">💰 Finance</span>':''}
+              ${r.financeImpact?'<span class="tag tag-fin" style="font-size:8px;padding:1px 5px">Finance</span>':''}
             </div>
           </div>
         </div>`).join('');
@@ -2418,7 +2410,7 @@ async function autoRefresh(){
 
   state.lastRefresh=Date.now();
   applyFilters();
-  toast('✅','Data Refreshed','Release database is up to date. Monitoring Anthropic, OpenAI, Gemini & Grok.', 3000);
+  toast('+','Data Refreshed','Release database is up to date. Monitoring Anthropic, OpenAI, Gemini & Grok.', 3000);
 
   if(btn) btn.classList.remove('spinning');
   refreshInProgress=false;
@@ -2439,7 +2431,7 @@ function applyPendingUpdate(){
   document.getElementById('refreshBanner').classList.remove('show');
   state.pendingUpdate=false;
   applyFilters();
-  toast('✅','Updated','Showing latest releases.');
+  toast('+','Updated','Showing latest releases.');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2451,8 +2443,7 @@ function showNewReleaseAlerts(){
     setTimeout(()=>{
       if(!state.alertsShown.has(r.id)){
         state.alertsShown.add(r.id);
-        const ico=r.financeImpact?'💰':r.type==='model'?'🤖':r.type==='partnership'?'🤝':'⚡';
-        toast(ico,`New: ${coLabel(r.company)}`,r.title.slice(0,72),6000);
+        toast('+',`New: ${coLabel(r.company)}`,r.title.slice(0,72),6000);
       }
     },i*1000);
   });
