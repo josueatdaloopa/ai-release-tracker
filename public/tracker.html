@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Release Intelligence</title>
+<title>AI Release News</title>
 <style>
 /* ── DALOOPA DESIGN SYSTEM ──────────────────────────────── */
 :root {
@@ -256,7 +256,7 @@ button { font-family: var(--font); }
   border: 1px solid var(--border);
   border-radius: var(--r);
   padding: 11px 12px;
-  background: #F5F4F1;
+  background: var(--bg2);
 }
 .fs-header {
   font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
@@ -312,6 +312,27 @@ button { font-family: var(--font); }
 
 /* ── MAIN ── */
 .main { padding: 24px; overflow-y: auto; }
+
+/* Hero section */
+.hero-section {
+  margin-bottom: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-h1 {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 7px;
+}
+.hero-sub {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 700px;
+}
 
 /* View tabs */
 .view-tabs {
@@ -833,9 +854,13 @@ button { font-family: var(--font); }
 <!-- HEADER -->
 <header class="header">
   <div class="header-brand">
-    <div class="brand-mark">AI</div>
+    <div class="brand-mark">
+      <svg width="11" height="19" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M10.5716 11.7484C10.2192 11.0105 9.76611 10.3648 9.21236 9.81132C8.65861 9.24109 8.07131 8.72117 7.45044 8.25157C6.84635 7.78197 6.26743 7.32914 5.71368 6.89308C5.15993 6.44025 4.70686 5.97065 4.35448 5.48428C4.00209 4.98113 3.8259 4.41929 3.8259 3.79874C3.8259 3.07757 4.0776 2.48218 4.58101 2.01258C4.95227 1.66562 5.37598 1.4434 5.85107 1.34486C6.11326 1.29036 6.38279 1.28616 6.65023 1.30818C7.23124 1.3543 7.7787 1.4979 8.29155 1.73899C8.92395 2.03774 9.41582 2.41509 9.76716 2.87212H9.87309V0.764151C9.38121 0.51782 8.82747 0.333333 8.21289 0.210692C7.61509 0.0702306 6.96486 0 6.26218 0H6.24331C5.58888 0 4.92605 0.150943 4.25484 0.45283C3.60041 0.754717 3.04667 1.2327 2.5936 1.88679C2.15731 2.52411 1.93917 3.34591 1.93917 4.3522C1.93917 5.35849 2.18248 6.24738 2.66911 6.91824C3.15574 7.57233 3.74305 8.15933 4.43104 8.67924C3.12218 9.38365 2.05663 10.2558 1.2344 11.2956C0.411116 12.3187 0 13.5346 0 14.9434C0 15.9832 0.226533 16.8889 0.679601 17.6604C1.14945 18.4151 1.77871 18.9937 2.56738 19.3962C3.37283 19.7987 4.28736 20 5.31095 20C6.48557 20 7.50078 19.7484 8.35657 19.2453C9.22914 18.7421 9.90035 18.0629 10.3702 17.2075C10.8568 16.3522 11.1001 15.4046 11.1001 14.3648C11.1001 13.3249 10.9239 12.4864 10.5716 11.7484ZM8.65861 16.9811C8.42369 17.5849 8.06291 18.0713 7.57629 18.4403C7.08966 18.8092 6.46879 18.9937 5.71368 18.9937C4.69008 18.9937 3.8259 18.6164 3.12113 17.8616C2.43314 17.1069 2.08914 15.9832 2.08914 14.4906C2.08914 13.2998 2.34085 12.2683 2.84425 11.3962C3.36444 10.5241 4.18667 9.83648 5.31095 9.33333C5.91504 9.78616 6.50235 10.2558 7.07288 10.7421C7.64341 11.2285 8.11326 11.8071 8.48242 12.478C8.85159 13.1488 9.03617 13.9706 9.03617 14.9434C9.03617 15.6813 8.91032 16.3606 8.65861 16.9811Z" fill="white"/>
+      </svg>
+    </div>
     <div>
-      <div class="brand-text">Release Intelligence</div>
+      <div class="brand-text">AI Release News</div>
       <div class="brand-sub">LIVE TRACKER</div>
     </div>
   </div>
@@ -937,6 +962,13 @@ button { font-family: var(--font); }
 
   <!-- MAIN -->
   <main class="main" id="mainArea">
+
+    <!-- Hero -->
+    <div class="hero-section">
+      <h1 class="hero-h1">Real-Time AI Model Landscape Insights</h1>
+      <p class="hero-sub">Stay ahead of AI-driven market impact with curated tracking of major model updates, side-by-side model comparisons, and strategic partnerships. Auditable, source-cited, and automatically refreshed every 10 minutes.</p>
+    </div>
+
     <!-- View tabs -->
     <div class="view-tabs" role="tablist">
       <button class="vtab active" id="tab-log"      onclick="switchView('log')"     role="tab">Release Log</button>
