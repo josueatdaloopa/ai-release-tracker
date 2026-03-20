@@ -313,6 +313,48 @@ button { font-family: var(--font); }
 /* ── MAIN ── */
 .main { padding: 24px; overflow-y: auto; }
 
+/* ── CATEGORY TOGGLE ── */
+.cat-toggle {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.cattab {
+  padding: 6px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  line-height: 1;
+}
+.cattab:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(62,29,35,0.05);
+}
+.cattab.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.cat-cnt {
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0.65;
+  min-width: 14px;
+  text-align: center;
+}
+.cattab.active .cat-cnt { opacity: 0.8; }
+
 /* Hero section */
 .hero-section {
   margin-bottom: 24px;
@@ -966,7 +1008,7 @@ button { font-family: var(--font); }
     </div>
 
     <!-- Finance Spotlight -->
-    <div class="sb-section">
+    <div class="sb-section" id="financeSpotlightSection">
       <span class="sb-label">Finance Spotlight</span>
       <div class="finance-spotlight">
         <div class="fs-header">High-Impact Releases</div>
@@ -993,6 +1035,16 @@ button { font-family: var(--font); }
 
   <!-- MAIN -->
   <main class="main" id="mainArea">
+
+    <!-- Category toggle -->
+    <div class="cat-toggle" id="catToggle">
+      <button class="cattab active" data-cat="all"            onclick="setCategory('all')">All AI News <span class="cat-cnt" id="cat-cnt-all"></span></button>
+      <button class="cattab"        data-cat="finance"        onclick="setCategory('finance')">Finance &amp; Markets <span class="cat-cnt" id="cat-cnt-finance"></span></button>
+      <button class="cattab"        data-cat="enterprise"     onclick="setCategory('enterprise')">Enterprise <span class="cat-cnt" id="cat-cnt-enterprise"></span></button>
+      <button class="cattab"        data-cat="infrastructure" onclick="setCategory('infrastructure')">Infrastructure <span class="cat-cnt" id="cat-cnt-infrastructure"></span></button>
+      <button class="cattab"        data-cat="health"         onclick="setCategory('health')">Health &amp; Biotech <span class="cat-cnt" id="cat-cnt-health"></span></button>
+      <button class="cattab"        data-cat="legal"          onclick="setCategory('legal')">Legal &amp; Compliance <span class="cat-cnt" id="cat-cnt-legal"></span></button>
+    </div>
 
     <!-- Hero -->
     <div class="hero-section">
@@ -1064,7 +1116,7 @@ button { font-family: var(--font); }
 // ═══════════════════════════════════════════════════════════
 const RELEASES = [
   {
-    id:'claude-for-finance',company:'anthropic',type:'partnership',
+    id:'claude-for-finance',company:'anthropic',type:'partnership',categories:['finance','enterprise'],
     title:'Claude for Financial Services — S&P Global, LSEG & Analyst Toolkit',
     date:'2025-07-15',financeImpact:true,financeImpactLevel:'high',
     summary:"Anthropic's landmark finance initiative: live S&P Capital IQ data, LSEG market data MCP server, an Excel add-in, and pre-built Agent Skills for cash flow models and initiating coverage reports. Disrupted Bloomberg Terminal and FactSet stocks on announcement day.",
@@ -1116,7 +1168,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'claude-opus-4-6',company:'anthropic',type:'model',
+    id:'claude-opus-4-6',company:'anthropic',type:'model',categories:['finance','enterprise'],
     title:'Claude Opus 4.6 — 1M Token Context, Self-Correction',
     date:'2025-10-15',financeImpact:true,financeImpactLevel:'high',
     summary:"Anthropic's most powerful model. First Opus with 1M token context in beta. Plans more carefully, sustains agentic tasks longer, catches its own mistakes. The premier tool for high-stakes financial analysis — reads full annual reports, M&A due diligence, and complex derivatives in one session.",
@@ -1161,7 +1213,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'claude-sonnet-4-5',company:'anthropic',type:'model',
+    id:'claude-sonnet-4-5',company:'anthropic',type:'model',categories:['finance','enterprise'],
     title:'Claude Sonnet 4.5 — Claude 4 Architecture Launch',
     date:'2025-05-22',financeImpact:true,financeImpactLevel:'high',
     summary:'Major capability leap introducing the Claude 4 architecture with dramatically improved reasoning, Computer Use v2, and web search. Set a new bar for analyst-grade AI. Stock markets for financial data terminal providers fell on announcement day.',
@@ -1205,7 +1257,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'claude-sonnet-4-6',company:'anthropic',type:'update',
+    id:'claude-sonnet-4-6',company:'anthropic',type:'update',categories:['finance','enterprise'],
     title:'Claude Sonnet 4.6 — Extended Thinking + Parallel Tool Use',
     date:'2025-11-14',financeImpact:true,financeImpactLevel:'high',
     summary:'Latest Sonnet iteration with extended thinking mode, parallel function calling, and reduced hallucination rates. Powers the current Claude Code experience and excels at multi-step financial analysis workflows.',
@@ -1248,7 +1300,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'anthropic-mcp',company:'anthropic',type:'api',
+    id:'anthropic-mcp',company:'anthropic',type:'api',categories:['finance','enterprise','infrastructure'],
     title:'Model Context Protocol (MCP) — Open Standard, Now at Linux Foundation',
     date:'2024-11-25',financeImpact:true,financeImpactLevel:'medium',
     summary:'Anthropic releases MCP as an open standard enabling AI models to securely connect to external data sources. Now donated to the Linux Foundation. Adopted by OpenAI, Google, and 100s of vendors. S&P Global, LSEG, FactSet, Bloomberg all building MCP servers.',
@@ -1287,7 +1339,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'claude-code-launch',company:'anthropic',type:'feature',
+    id:'claude-code-launch',company:'anthropic',type:'feature',categories:['enterprise','infrastructure'],
     title:'Claude Code GA — $1B ARR in 6 Months',
     date:'2025-05-22',financeImpact:false,financeImpactLevel:'low',
     summary:'Claude Code reaches general availability. Hit $1B ARR in ~6 months — the fastest product to that milestone. Enables complex multi-file code editing, git operations, and automated software engineering. Significant for quant and fintech teams.',
@@ -1331,7 +1383,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'o1-pro-openai',company:'openai',type:'model',
+    id:'o1-pro-openai',company:'openai',type:'model',categories:['finance','enterprise'],
     title:'OpenAI o1-pro API — $150/$600 per M Tokens, 10x Compute',
     date:'2025-03-19',financeImpact:true,financeImpactLevel:'medium',
     summary:'OpenAI makes o1-pro available via API with 10x compute budget vs o1. Priced at $150/$600/M tokens — clearly institutional-grade. Best-in-class math reasoning for complex derivatives, risk model validation, and structured credit analysis.',
@@ -1375,7 +1427,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'gpt4o-launch',company:'openai',type:'model',
+    id:'gpt4o-launch',company:'openai',type:'model',categories:['finance','enterprise'],
     title:'GPT-4o — Real-Time Audio + Vision + Text (Multimodal)',
     date:'2024-05-13',financeImpact:true,financeImpactLevel:'medium',
     summary:'OpenAI releases GPT-4o combining real-time audio, vision, and text in one model. Enables financial chart reading, earnings call audio analysis, and voice-driven research queries. One of OpenAI\'s highest-engagement posts ever.',
@@ -1416,7 +1468,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'openai-operator',company:'openai',type:'feature',
+    id:'openai-operator',company:'openai',type:'feature',categories:['finance','enterprise'],
     title:'OpenAI Operator — Autonomous Web Agent (Enterprise GA)',
     date:'2025-08-15',financeImpact:true,financeImpactLevel:'medium',
     summary:"OpenAI's Operator agent can browse the web, fill forms, and complete multi-step tasks autonomously. Enterprise GA expands to financial research automation including SEC EDGAR navigation, overnight data collection, and competitive intelligence workflows.",
@@ -1445,7 +1497,7 @@ const RELEASES = [
     sources:[{label:'OpenAI Blog',url:'https://openai.com/blog/operator'}]
   },
   {
-    id:'gemini-2-0-flash',company:'gemini',type:'model',
+    id:'gemini-2-0-flash',company:'gemini',type:'model',categories:['enterprise'],
     title:'Gemini 2.0 Flash GA — 2× Faster, Audio Input, 1M Context',
     date:'2025-02-05',financeImpact:false,financeImpactLevel:'low',
     summary:'Gemini 2.0 Flash reaches GA — 2× faster than 1.5 Flash with native audio input, 1M token context, and a free tier. Strong for high-volume financial document processing and earnings call transcription at very low cost.',
@@ -1489,7 +1541,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'gemini-2-0-pro',company:'gemini',type:'model',
+    id:'gemini-2-0-pro',company:'gemini',type:'model',categories:['finance','enterprise'],
     title:'Gemini 2.0 Pro — Native Google Search + Code Execution + 2M Context',
     date:'2025-02-05',financeImpact:true,financeImpactLevel:'medium',
     summary:"Google's flagship model with deeply integrated Google Search grounding (real-time data), Python code execution, native Google Workspace AI, and 2M token experimental context. Best choice for Google-ecosystem finance teams.",
@@ -1531,7 +1583,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'grok-3',company:'grok',type:'model',
+    id:'grok-3',company:'grok',type:'model',categories:['enterprise'],
     title:'Grok 3 — 43M View Launch, Real-Time X Data + Think Mode',
     date:'2025-02-17',financeImpact:false,financeImpactLevel:'low',
     summary:"xAI releases Grok 3 with the highest-engagement AI launch post in history (43M views, 36K likes on @xAI). Claims top scores on MATH and AIME benchmarks. Unique advantage: native real-time X/Twitter data for social sentiment trading signals.",
@@ -1577,7 +1629,7 @@ const RELEASES = [
 
   // ── ADDITIONAL OPENAI ───────────────────────────────────
   {
-    id:'openai-o3-mini',company:'openai',type:'model',
+    id:'openai-o3-mini',company:'openai',type:'model',categories:['finance','enterprise'],
     title:'OpenAI o3-mini — First Production-Ready Small Reasoning Model',
     date:'2025-01-31',financeImpact:true,financeImpactLevel:'medium',
     summary:"OpenAI releases o3-mini, the first compact reasoning model with function calling, structured outputs, and adjustable reasoning effort (low/medium/high). Outperforms o1-high on coding benchmarks at a fraction of the cost. Designed for production deployment in STEM-heavy applications including financial modeling and quantitative analysis.",
@@ -1618,7 +1670,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'openai-o3-o4mini',company:'openai',type:'model',
+    id:'openai-o3-o4mini',company:'openai',type:'model',categories:['finance','enterprise'],
     title:'OpenAI o3 + o4-mini — Multimodal Reasoning with Vision & Web Browsing',
     date:'2025-04-16',financeImpact:true,financeImpactLevel:'high',
     summary:"OpenAI releases o3 and o4-mini simultaneously. o3 is OpenAI's most advanced reasoning model — first in the series with native web browsing, image generation, and visual understanding built into reasoning. o4-mini is a faster, cheaper companion with strong reasoning at low cost. Both support tool use within reasoning chains. Available to ChatGPT Plus/Pro/Team and API.",
@@ -1660,7 +1712,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'openai-gpt5',company:'openai',type:'model',
+    id:'openai-gpt5',company:'openai',type:'model',categories:['finance','enterprise'],
     title:'GPT-5 — OpenAI Flagship: 400K Context, 45% Fewer Hallucinations',
     date:'2025-08-07',financeImpact:true,financeImpactLevel:'high',
     summary:"OpenAI launches GPT-5, its most capable flagship model. 400K token context window, 45% fewer hallucinations vs GPT-4o, state-of-the-art across coding, math, writing, and visual perception. Available via ChatGPT and API on day one. Becomes the primary model for high-stakes professional use, and the long-context engine powering Perplexity Computer.",
@@ -1705,7 +1757,7 @@ const RELEASES = [
 
   // ── ADDITIONAL ANTHROPIC ─────────────────────────────────
   {
-    id:'claude-3-7-sonnet',company:'anthropic',type:'model',
+    id:'claude-3-7-sonnet',company:'anthropic',type:'model',categories:['finance','enterprise'],
     title:'Claude 3.7 Sonnet — First Hybrid Reasoning Model, 128K Output Tokens',
     date:'2025-02-24',financeImpact:true,financeImpactLevel:'high',
     summary:"Anthropic releases Claude 3.7 Sonnet — the industry's first hybrid reasoning model. Toggle extended thinking on or off per request. At release: best-in-class on coding benchmarks (SWEbench), 128K output tokens (up from 8K), and same pricing as Claude 3.5 Sonnet. Reasoning traces are visible and auditable — a critical feature for compliance-sensitive financial use.",
@@ -1750,7 +1802,7 @@ const RELEASES = [
 
   // ── ADDITIONAL GOOGLE ─────────────────────────────────────
   {
-    id:'gemini-2-5-pro',company:'gemini',type:'model',
+    id:'gemini-2-5-pro',company:'gemini',type:'model',categories:['finance','enterprise'],
     title:'Gemini 2.5 Pro — Google\'s First Reasoning Model, 1M Token Context',
     date:'2025-03-25',financeImpact:true,financeImpactLevel:'high',
     summary:"Google releases Gemini 2.5 Pro Experimental — their first reasoning model with a built-in thinking mode and a 1M token context window (2M coming). State-of-the-art across coding, math, and reasoning benchmarks at release. Available in Google AI Studio and for Gemini Advanced subscribers. Marks Google's full entry into the extended-reasoning model category.",
@@ -1795,7 +1847,7 @@ const RELEASES = [
 
   // ── ADDITIONAL GROK ───────────────────────────────────────
   {
-    id:'grok-4',company:'grok',type:'model',
+    id:'grok-4',company:'grok',type:'model',categories:['finance','enterprise'],
     title:'Grok 4 + Grok 4 Heavy — Multi-Agent Parallel Reasoning, SuperGrok Heavy',
     date:'2025-07-09',financeImpact:true,financeImpactLevel:'medium',
     summary:"xAI releases Grok 4 and Grok 4 Heavy on July 9, 2025, claiming top scores across frontier model benchmarks. Grok 4 Heavy runs multiple agents in parallel for deeper reasoning. Accompanied by the new SuperGrok Heavy subscription tier. Continues native real-time X/Twitter data access. Positioned as a direct challenger to GPT-5 and Claude Opus 4.",
@@ -1839,7 +1891,7 @@ const RELEASES = [
 
   // ── PERPLEXITY ──────────────────────────────────────────
   {
-    id:'perplexity-computer',company:'perplexity',type:'feature',
+    id:'perplexity-computer',company:'perplexity',type:'feature',categories:['finance','enterprise'],
     title:'Perplexity Computer — Super Agent Orchestrating 19 AI Models',
     date:'2026-02-25',financeImpact:true,financeImpactLevel:'high',
     summary:"Perplexity launches 'Computer' — a long-running multi-agent system that breaks complex goals into subtasks and routes them across 19 frontier models (Claude Opus 4.6 for reasoning, Gemini for deep research, Grok for speed, GPT-5 for long-context). Creates websites, writes reports, generates datasets, deploys code, and manages projects end-to-end. Runs in an isolated sandbox. Available to Max subscribers ($200/mo).",
@@ -1889,7 +1941,7 @@ const RELEASES = [
     ]
   },
   {
-    id:'perplexity-model-council',company:'perplexity',type:'feature',
+    id:'perplexity-model-council',company:'perplexity',type:'feature',categories:['finance','enterprise'],
     title:'Perplexity Model Council — Run One Query Across 3 AI Models Simultaneously',
     date:'2026-02-05',financeImpact:true,financeImpactLevel:'medium',
     summary:"Perplexity launches Model Council: runs any query simultaneously through three frontier models (e.g. Claude Opus 4.6, GPT-5.2, Gemini 3.0), then a synthesizer resolves conflicts and surfaces where models agree vs. diverge. Designed to eliminate model-choice bias and improve trust in high-stakes decisions. Available on Max ($200/mo) via web.",
@@ -1941,6 +1993,7 @@ const RELEASES = [
 const state = {
   filter: 'all',
   typeFilter: null,
+  category: 'all',
   currentView: 'log',
   sort: 'date-desc',
   filtered: [],
@@ -1969,6 +2022,50 @@ function isNew(d){ return new Date(d+'T00:00:00')>=new Date(Date.now()-7*864e5);
 // ═══════════════════════════════════════════════════════════
 // FILTER + SORT
 // ═══════════════════════════════════════════════════════════
+// ── CATEGORY TOGGLE ─────────────────────────────────────────
+const CAT_COPY = {
+  all:{
+    h1:'Real-Time AI Model Landscape Insights',
+    sub:'Stay ahead of AI-driven market impact with curated tracking of major model updates, side-by-side model comparisons, and strategic partnerships. Auditable, source-cited, and automatically refreshed every 10 minutes.'
+  },
+  finance:{
+    h1:'AI in Finance & Markets',
+    sub:'AI releases with direct impact on investment research, financial modeling, market data, and analyst workflows — tracked for the buy and sell side. From frontier models to live data integrations.'
+  },
+  enterprise:{
+    h1:'AI for Enterprise & Productivity',
+    sub:'AI tools reshaping how knowledge workers operate — copilots, autonomous agents, document processing, and workflow automation across professional teams and industries.'
+  },
+  infrastructure:{
+    h1:'AI Infrastructure & Platforms',
+    sub:'The compute, protocols, and APIs powering every AI application — foundational standards like MCP, developer platforms, and cloud services that underpin the entire AI stack.'
+  },
+  health:{
+    h1:'AI in Health & Biotech',
+    sub:'AI releases impacting drug discovery, clinical workflows, medical imaging, and health IT — a critical sector for healthcare-focused investors, operators, and researchers.'
+  },
+  legal:{
+    h1:'AI in Legal & Compliance',
+    sub:'AI applied to contract review, regulatory intelligence, compliance automation, and legal research — relevant for GC offices, RegTech, risk management, and finance legal teams.'
+  }
+};
+function updateHeroCopy(cat){
+  const c=CAT_COPY[cat]||CAT_COPY.all;
+  const h1=document.querySelector('.hero-h1');
+  const sub=document.querySelector('.hero-sub');
+  if(h1) h1.textContent=c.h1;
+  if(sub) sub.textContent=c.sub;
+}
+function setCategory(cat){
+  state.category=cat;
+  document.querySelectorAll('.cattab').forEach(t=>t.classList.toggle('active',t.dataset.cat===cat));
+  updateHeroCopy(cat);
+  // Show/hide finance spotlight in sidebar based on category relevance
+  const fsSection=document.getElementById('financeSpotlightSection');
+  if(fsSection) fsSection.style.display=(cat==='all'||cat==='finance')?'':'none';
+  applyFilters();
+}
+
 function setFilter(f){
   state.filter=f; state.typeFilter=null;
   document.querySelectorAll('.hchip').forEach(c=>c.classList.toggle('active',c.dataset.filter===f));
@@ -1991,6 +2088,7 @@ function applyFilters(){
   if(_filterDebounce) cancelAnimationFrame(_filterDebounce);
   _filterDebounce=requestAnimationFrame(()=>{
     let items=[...RELEASES];
+    if(state.category!=='all') items=items.filter(r=>r.categories&&r.categories.includes(state.category));
     if(state.filter==='finance') items=items.filter(r=>r.financeImpact);
     else if(state.filter!=='all') items=items.filter(r=>r.company===state.filter);
     if(state.typeFilter) items=items.filter(r=>r.type===state.typeFilter);
@@ -2031,6 +2129,12 @@ function updateSidebar(){
   });
   setText('chip-cnt-all',all.length);
   ['model','update','partnership','api','feature','research'].forEach(t=>setText('cnt-'+t,all.filter(r=>r.type===t).length));
+  // Category counts
+  setText('cat-cnt-all',all.length);
+  ['finance','enterprise','infrastructure','health','legal'].forEach(c=>{
+    const n=all.filter(r=>r.categories&&r.categories.includes(c)).length;
+    setText('cat-cnt-'+c,n||'');
+  });
 
   // Finance spotlight
   const fsEl=document.getElementById('financeSpotlight');
@@ -2100,7 +2204,14 @@ function renderLog(){
   const container=document.getElementById('releasesContainer');
   if(!container) return;
   if(!state.filtered.length){
-    container.innerHTML='<div class="empty"><div class="empty-ico"></div><h3>No releases match this filter</h3></div>';
+    const comingSoon=['health','legal'];
+    const catLabels={health:'Health & Biotech',legal:'Legal & Compliance'};
+    if(comingSoon.includes(state.category)){
+      const label=catLabels[state.category];
+      container.innerHTML=`<div class="empty"><div class="empty-ico">🔭</div><h3>${label} releases coming soon</h3><p style="font-size:12px;color:var(--muted);margin-top:6px;max-width:320px;margin-inline:auto">We're curating AI releases in this sector. Check back soon — or switch to <strong>All AI News</strong> to see everything tracked so far.</p></div>`;
+    } else {
+      container.innerHTML='<div class="empty"><div class="empty-ico"></div><h3>No releases match this filter</h3></div>';
+    }
     return;
   }
   // Use DocumentFragment for performance
